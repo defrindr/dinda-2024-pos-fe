@@ -2,38 +2,14 @@ import AdminLayout from '../layouts/AdminLayout.vue'
 
 import DashboardList from '@/views/Admin/Main/Dashboard/DashboardList.vue'
 
-import StorageForm from '@/views/Admin/Master/Storage/StorageForm.vue'
-import StorageList from '@/views/Admin/Master/Storage/StorageList.vue'
-
 import CategoryForm from '@/views/Admin/Master/Category/CategoryForm.vue'
 import CategoryList from '@/views/Admin/Master/Category/CategoryList.vue'
 
-import MemberForm from '@/views/Admin/Master/Member/MemberForm.vue'
-import MemberList from '@/views/Admin/Master/Member/MemberList.vue'
-
-import ProductForm from '@/views/Admin/Master/Product/ProductForm.vue'
-import ProductList from '@/views/Admin/Master/Product/ProductList.vue'
+import PelangganForm from '@/views/Admin/Master/Pelanggan/Form.vue'
+import PelangganList from '@/views/Admin/Master/Pelanggan/List.vue'
 
 import UserForm from '@/views/Admin/Master/User/UserForm.vue'
 import UserList from '@/views/Admin/Master/User/UserList.vue'
-
-import TransactionForm from '@/views/Admin/main/transaction/TransactionForm.vue'
-import TransactionList from '@/views/Admin/main/transaction/TransactionList.vue'
-
-const StorageRoutes = [
-  {
-    path: 'master/storage',
-    component: StorageList
-  },
-  {
-    path: 'master/storage/create',
-    component: StorageForm
-  },
-  {
-    path: 'master/storage/update/:id',
-    component: StorageForm
-  }
-]
 
 const CategoryRoutes = [
   {
@@ -50,33 +26,18 @@ const CategoryRoutes = [
   }
 ]
 
-const MemberRoutes = [
+const PelangganRoutes = [
   {
-    path: 'master/member',
-    component: MemberList
+    path: 'master/pelanggan',
+    component: PelangganList
   },
   {
-    path: 'master/member/create',
-    component: MemberForm
+    path: 'master/pelanggan/create',
+    component: PelangganForm
   },
   {
-    path: 'master/member/update/:id',
-    component: MemberForm
-  }
-]
-
-const ProductRoutes = [
-  {
-    path: 'master/product',
-    component: ProductList
-  },
-  {
-    path: 'master/product/create',
-    component: ProductForm
-  },
-  {
-    path: 'master/product/update/:id',
-    component: ProductForm
+    path: 'master/pelanggan/update/:id',
+    component: PelangganForm
   }
 ]
 
@@ -95,17 +56,6 @@ const UserRoutes = [
   }
 ]
 
-const TransactionRoutes = [
-  {
-    path: 'main/transaction',
-    component: TransactionList
-  },
-  {
-    path: 'main/transaction/create',
-    component: TransactionForm
-  }
-]
-
 export const AdminRoutes = {
   path: '/admin',
   component: AdminLayout,
@@ -117,11 +67,8 @@ export const AdminRoutes = {
       path: 'home',
       component: DashboardList
     },
-    ...StorageRoutes,
+    ...PelangganRoutes,
     ...CategoryRoutes,
-    ...MemberRoutes,
-    ...ProductRoutes,
-    ...UserRoutes,
-    ...TransactionRoutes
+    ...UserRoutes
   ]
 }

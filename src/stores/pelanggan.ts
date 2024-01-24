@@ -6,10 +6,15 @@ import router from '@/router'
 import Request from '@/helpers/requests'
 import qs from 'qs'
 
-export interface IMember {
+export interface IMasterPelanggan {
   id: number
+  code: string
   name: string
+  phone: string
   address: string
+  gender: string
+  dob: Date
+  status: string
 }
 
 interface IMeta {
@@ -20,10 +25,10 @@ interface IMeta {
   totalPage: number
 }
 
-export const useMember = defineStore('master.member', () => {
+export const usePelanggan = defineStore('master.pelanggan', () => {
   const { setErrorAlert, setSuccessAlert } = useAlertStore()
 
-  const items = ref<IMember[]>([])
+  const items = ref<IMasterPelanggan[]>([])
   const metaRequest = ref<IMeta>({
     currentPage: 0,
     total: 0,
@@ -33,55 +38,56 @@ export const useMember = defineStore('master.member', () => {
   })
 
   const fetch = async (url: string, search: string = '', page: number = 1) => {
-    let params = qs.stringify({ search, page })
     try {
+      // request ke server
+      let params = qs.stringify({ search, page })
       const handler = await Request.get(`${BASE_URL}/${url}?${params}`)
+
+      // handle error
       if (handler.error) {
         setErrorAlert('Gagal mengirim permintaan')
         console.log('request error', handler.error)
         return
-      }
-
-      if (handler.response?.status !== 200) {
+      } else if (handler.response?.status !== 200) {
         setErrorAlert(handler.json.message)
         console.log('response gagal')
         return
       }
+
+      // aliasing variable
       const data = handler.json.data
 
-      metaRequest.value = {
-        currentPage: handler.json.current_page,
-        total: handler.json.total,
-        perPage: handler.json.per_page,
-        path: handler.json.path,
-        totalPage: handler.json.last_page
-      }
-      items.value = data
+      // assign data to ref
+      metaRequest.value = data.meta
+      items.value = data.items
     } catch (error) {
+      // handle error tidak diketahui
       setErrorAlert('Terjadi kesalahan saat menjalankan aksi')
       console.log('catching', error)
     }
   }
 
   const create = async <T>(url: string, body: T, redirect: string) => {
-    console.log(body)
     try {
-      const handler = await Request.post(`${BASE_URL}/${url}`, body)
-      if (handler.error) {
+      // request ke server
+      const handler: any = await Request.post(`${BASE_URL}/${url}`, body)
+      console.log('handler', handler)
+      // handle dari request
+      if (handler?.error) {
         setErrorAlert('Gagal mengirim permintaan')
         console.log('request error', handler.error)
         return
-      }
-
-      if (handler.response?.status !== 200) {
+      } else if (handler.response?.status !== 200) {
         setErrorAlert(handler.json.message)
         console.log('response gagal')
         return
       }
 
+      // response jika berhasil
       setSuccessAlert(handler.json.message)
       router.push(redirect)
     } catch (error) {
+      // error tidak diketahui
       setErrorAlert('Terjadi kesalahan saat menjalankan aksi')
       console.log('catching', error)
     }
@@ -89,22 +95,25 @@ export const useMember = defineStore('master.member', () => {
 
   const update = async <T>(url: string, id: any, body: T, redirect: string) => {
     try {
+      // request ke server
       const handler = await Request.put(`${BASE_URL}/${url}/${id}`, body)
+
+      // handle dari request
       if (handler.error) {
         setErrorAlert('Gagal mengirim permintaan')
         console.log('request error', handler.error)
         return
-      }
-
-      if (handler.response?.status !== 200) {
+      } else if (handler.response?.status !== 200) {
         setErrorAlert(handler.json.message)
         console.log('response gagal')
         return
       }
 
+      // response jika berhasil
       setSuccessAlert(handler.json.message)
       router.push(redirect)
     } catch (error) {
+      // error tidak diketahui
       setErrorAlert('Terjadi kesalahan saat menjalankan aksi')
       console.log('catching', error)
     }
@@ -112,48 +121,55 @@ export const useMember = defineStore('master.member', () => {
 
   const first = async <T>(url: string, id: any) => {
     try {
+      // request ke server
       const handler = await Request.get(`${BASE_URL}/${url}/${id}`)
+
+      // handle jika request error
       if (handler.error) {
         setErrorAlert('Gagal mengirim permintaan')
         console.log('request error', handler.error)
         return
-      }
-
-      if (handler.response?.status !== 200) {
+      } else if (handler.response?.status !== 200) {
         setErrorAlert(handler.json.message)
         console.log('response gagal')
         return
       }
 
+      // kembalikan data response
       const data: T = handler.json.data
       return data
     } catch (error) {
+      // error yang tidak diketahui
       setErrorAlert('Terjadi kesalahan saat menjalankan aksi')
       console.log('catching', error)
     }
   }
   const destroy = async <T>(url: string, id: any) => {
     try {
+      // request ke server
       const handler = await Request.delete(`${BASE_URL}/${url}/${id}`)
+
+      // handle jika request error
       if (handler.error) {
         setErrorAlert('Gagal mengirim permintaan')
         console.log('request error', handler.error)
         return
-      }
-
-      if (handler.response?.status !== 200) {
+      } else if (handler.response?.status !== 200) {
         setErrorAlert(handler.json.message)
         console.log('response gagal')
         return
       }
 
+      // jika berhasil perbaharui / request ulang data
       setSuccessAlert(handler.json.message)
       await fetch(url)
     } catch (error) {
+      // error tidak diketahui
       setErrorAlert('Terjadi kesalahan saat menjalankan aksi')
       console.log('catching', error)
     }
   }
 
+  // bundle fungsi yang dapat di gunakan diluar modul
   return { items, metaRequest, fetch, create, update, first, destroy }
 })

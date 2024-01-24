@@ -32,7 +32,7 @@ const isAdmin = user.value?.role == ROLE_ADMIN
           <SidebarItem label="Transaksi" to="/admin/main/transaction" icon="fas fa-wallet" />
           <li v-if="isAdmin" class="nav-header">MASTER</li>
           <SidebarItem v-if="isAdmin" label="Kategori" to="/admin/master/category" icon="fas fa-database" />
-          <SidebarItem v-if="isAdmin" label="Pelanggan" to="/admin/master/member" icon="fas fa-users" />
+          <SidebarItem v-if="isAdmin" label="Pelanggan" to="/admin/master/pelanggan" icon="fas fa-users" />
           <SidebarItem v-if="isAdmin" label="Produk" to="/admin/master/product" icon="fas fa-box" />
           <li v-if="isAdmin" class="nav-header">SISTEM</li>
           <SidebarItem v-if="isAdmin" label="Pengguna" to="/admin/master/user" icon="fas fa-user" />

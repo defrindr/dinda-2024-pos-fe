@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 interface IInputField {
   placeholder?: string
-  type: string
+  type?: string
   label: string
   icon?: string
   modelValue: any
@@ -15,7 +15,7 @@ defineEmits(['update:modelValue'])
   <div class="form-group">
     <label for="">{{ label }}</label>
     <div class="input-group">
-      <textarea :value="modelValue" @input="$emit('update:modelValue', $event.target.value)" :type="type" class="form-control" :placeholder="placeholder" />
+      <textarea :value="modelValue" @input="$emit('update:modelValue', $event.target.value)" :type="type ?? 'text'" class="form-control" :placeholder="placeholder" />
       <div v-if="icon" class="input-group-append">
         <div class="input-group-text">
           <span :class="icon"></span>
