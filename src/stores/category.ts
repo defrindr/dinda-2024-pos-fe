@@ -1,23 +1,11 @@
 import { BASE_URL } from '@/config'
-import { defineStore } from 'pinia'
-import { ref, type Ref } from 'vue'
-import { useAlertStore } from './alert'
-import router from '@/router'
 import Request from '@/helpers/requests'
+import type { IMasterCategory, IMeta } from '@/interfaces'
+import router from '@/router'
+import { defineStore } from 'pinia'
 import qs from 'qs'
-
-export interface IMasterCategory {
-  id: number
-  name: string
-}
-
-interface IMeta {
-  currentPage: number
-  total: number
-  perPage: number
-  path: number
-  totalPage: number
-}
+import { ref } from 'vue'
+import { useAlertStore } from './alert'
 
 export const useCategory = defineStore('master.category', () => {
   const { setErrorAlert, setSuccessAlert } = useAlertStore()
@@ -34,7 +22,7 @@ export const useCategory = defineStore('master.category', () => {
   const fetch = async (url: string, search: string = '', page: number = 1) => {
     try {
       // request ke server
-      let params = qs.stringify({ search, page })
+      const params = qs.stringify({ search, page })
       const handler = await Request.get(`${BASE_URL}/${url}?${params}`)
 
       // handle error
@@ -65,7 +53,7 @@ export const useCategory = defineStore('master.category', () => {
     try {
       // request ke server
       const handler: any = await Request.post(`${BASE_URL}/${url}`, body)
-      console.log('handler',handler)
+      console.log('handler', handler)
       // handle dari request
       if (handler?.error) {
         setErrorAlert('Gagal mengirim permintaan')
@@ -138,7 +126,7 @@ export const useCategory = defineStore('master.category', () => {
       console.log('catching', error)
     }
   }
-  const destroy = async <T>(url: string, id: any) => {
+  const destroy = async (url: string, id: any) => {
     try {
       // request ke server
       const handler = await Request.delete(`${BASE_URL}/${url}/${id}`)

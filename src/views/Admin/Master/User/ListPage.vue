@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import Pagination from '@/components/Common/Pagination.vue'
+import Pagination from '@/components/Common/PaginationComponent.vue'
 import { useAppStore } from '@/stores/app'
 import { useUser } from '@/stores/user'
 import { storeToRefs } from 'pinia'
@@ -93,7 +93,7 @@ initialRequest()
                 <th>Aksi</th>
               </thead>
               <tbody>
-                <tr v-if="items.length > 0" v-for="(item, index) in items">
+                <tr :key="index" v-for="(item, index) in items">
                   <td>{{ index + 1 + metaRequest?.perPage * (metaRequest?.currentPage - 1) }}</td>
                   <td>{{ item.code }}</td>
                   <td>{{ item.name }}</td>

@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import Pagination from '@/components/Common/Pagination.vue'
-import Modal from '@/components/Common/Modal.vue'
+import Modal from '@/components/Common/ModalComponent.vue'
+import Pagination from '@/components/Common/PaginationComponent.vue'
+import { BASE_URL } from '@/config'
+import type { ITransaction } from '@/interfaces'
 import { useAppStore } from '@/stores/app'
-import { type ITransaction, useTransaction } from '@/stores/transaction'
+import { useTransaction } from '@/stores/transaction'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
-import { BASE_URL } from '@/config'
 
 const search = ref('')
 const { setPageMeta } = useAppStore()
@@ -20,12 +21,6 @@ const { items, metaRequest } = storeToRefs(transactionStore)
 
 const initialRequest = async (q: string = '', page: number = 1) => {
   await transactionStore.fetch(URL_TARGET, q, page)
-}
-
-const destroy = async (id: any) => {
-  if (confirm('Yakin ingin menghapus data ini ?')) {
-    transactionStore.destroy(URL_TARGET, id)
-  }
 }
 
 const onSearch = () => {
@@ -61,42 +56,32 @@ const openStruk = (transactionCode: string) => {
             <tr>
               <th>Kode Transaksi</th>
               <td>:</td>
-              <td>{{ selectedItem.transaction_code }}</td>
+              <td>{{ selectedItem?.invoice }}</td>
             </tr>
             <tr>
               <th>Tanggal</th>
               <td>:</td>
-              <td>{{ selectedItem.transaction_date }}</td>
+              <td>{{ selectedItem?._date }}</td>
             </tr>
             <tr>
               <th>Member</th>
               <td>:</td>
-              <td>{{ selectedItem.member?.name ?? '-' }}</td>
+              <td>{{ selectedItem.pelanggan?.name ?? '-' }}</td>
             </tr>
             <tr>
               <th>Total Harga</th>
               <td>:</td>
-              <td>{{ selectedItem.price_formatted }}</td>
-            </tr>
-            <tr>
-              <th>Diskon</th>
-              <td>:</td>
-              <td>{{ selectedItem.discount_formatted }}</td>
-            </tr>
-            <tr>
-              <th>Total Akhir</th>
-              <td>:</td>
-              <td>{{ selectedItem.total_price_formatted }}</td>
+              <td>{{ selectedItem.total_price }}</td>
             </tr>
             <tr>
               <th>Dibayarkan</th>
               <td>:</td>
-              <td>{{ selectedItem.pay_formatted }}</td>
+              <td>{{ selectedItem.total_pay }}</td>
             </tr>
             <tr>
               <th>Kembalian</th>
               <td>:</td>
-              <td>{{ selectedItem.back_formatted }}</td>
+              <td>{{ selectedItem.total_return }}</td>
             </tr>
           </tbody>
         </table>
@@ -113,19 +98,19 @@ const openStruk = (transactionCode: string) => {
             <th>Sub Total</th>
           </thead>
           <tbody>
-            <tr v-for="(detail, index) in selectedItem.details">
+            <tr :key="index" v-for="(detail, index) in selectedItem.items">
               <td>{{ index + 1 }}</td>
-              <td>{{ detail.product.name }}</td>
-              <td>{{ detail.price_formatted }}</td>
-              <td>{{ detail.amount }}</td>
-              <td>{{ detail.total_price_formatted }}</td>
+              <td>{{ detail.product?.name }}</td>
+              <td>{{ detail.price }}</td>
+              <td>{{ detail.quantity }}</td>
+              <td>{{ detail.total_price }}</td>
             </tr>
           </tbody>
         </table>
       </div>
 
       <template #footer>
-        <button class="btn btn-warning text-dark" @click="openStruk(selectedItem?.transaction_code)">
+        <button class="btn btn-warning text-dark" @click="openStruk(selectedItem?.invoice)">
           <i class="fas fa-print"></i>
           Struk
         </button>
@@ -155,24 +140,20 @@ const openStruk = (transactionCode: string) => {
                 <th>Kode</th>
                 <th>Member</th>
                 <th>Total Harga</th>
-                <th>Diskon</th>
-                <th>Harga Akhir</th>
                 <th>Aksi</th>
               </thead>
               <tbody>
-                <tr v-if="items.length > 0" v-for="(item, index) in items">
+                <tr :key="index" v-for="(item, index) in items">
                   <td>{{ index + 1 + metaRequest?.perPage * (metaRequest?.currentPage - 1) }}</td>
-                  <td>{{ item.transaction_date }}</td>
-                  <td>{{ item.transaction_code }}</td>
-                  <td>{{ item?.member?.name ?? '-' }}</td>
-                  <td>{{ item.price_formatted }}</td>
-                  <td>{{ item.discount_formatted }}</td>
-                  <td>{{ item.total_price_formatted }}</td>
+                  <td>{{ item._date }}</td>
+                  <td>{{ item.invoice }}</td>
+                  <td>{{ item?.pelanggan?.name ?? '-' }}</td>
+                  <td>{{ item.total_price }}</td>
                   <td width="150rem">
                     <button @click="detail(item)" class="btn btn-primary mb-2 mr-2">
                       <i class="fas fa-eye"></i>
                     </button>
-                    <button class="btn btn-warning text-dark mb-2 mr-2" @click="openStruk(item.transaction_code)">
+                    <button class="btn btn-warning text-dark mb-2 mr-2" @click="openStruk(item.invoice)">
                       <i class="fas fa-print"></i>
                     </button>
                   </td>

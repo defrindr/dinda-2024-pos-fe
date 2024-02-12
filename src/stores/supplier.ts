@@ -1,16 +1,16 @@
 import { BASE_URL } from '@/config'
 import Request from '@/helpers/requests'
-import type { IMasterPelanggan, IMeta } from '@/interfaces'
+import type { IMasterSupplier, IMeta } from '@/interfaces'
 import router from '@/router'
 import { defineStore } from 'pinia'
 import qs from 'qs'
 import { ref } from 'vue'
 import { useAlertStore } from './alert'
 
-export const usePelanggan = defineStore('master.pelanggan', () => {
+export const useSupplier = defineStore('master.supplier', () => {
   const { setErrorAlert, setSuccessAlert } = useAlertStore()
 
-  const items = ref<IMasterPelanggan[]>([])
+  const items = ref<IMasterSupplier[]>([])
   const metaRequest = ref<IMeta>({
     currentPage: 0,
     total: 0,

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import InputField from '@/components/Auth/Login/InputField.vue'
+import InputField from '@/components/Auth/Login/InputFieldAuthComponent.vue'
 import { useAuthStore } from '@/stores/auth'
-import { ref, reactive } from 'vue'
+import { reactive } from 'vue'
 
 const authStore = useAuthStore()
 

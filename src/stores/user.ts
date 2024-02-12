@@ -1,29 +1,11 @@
 import { BASE_URL } from '@/config'
 import Request from '@/helpers/requests'
+import type { IMeta, IUser } from '@/interfaces'
 import router from '@/router'
 import { defineStore } from 'pinia'
 import qs from 'qs'
 import { ref } from 'vue'
 import { useAlertStore } from './alert'
-
-export interface IUser {
-  id: number
-  code: string
-  username: string
-  name: string
-  email: string
-  phone: string
-  photo: string
-  role: string
-}
-
-interface IMeta {
-  currentPage: number
-  total: number
-  perPage: number
-  path: number
-  totalPage: number
-}
 
 export const useUser = defineStore('master.user', () => {
   const { setErrorAlert, setSuccessAlert } = useAlertStore()
@@ -38,7 +20,7 @@ export const useUser = defineStore('master.user', () => {
   })
 
   const fetch = async (url: string, search: string = '', page: number = 1) => {
-    let params = qs.stringify({ search, page })
+    const params = qs.stringify({ search, page })
     try {
       const handler = await Request.get(`${BASE_URL}/${url}?${params}`)
       if (handler.error) {
@@ -116,7 +98,7 @@ export const useUser = defineStore('master.user', () => {
     }
   }
 
-  const first = async <T>(url: string, id: any): Promise<IUser | null> => {
+  const first = async (url: string, id: any): Promise<IUser | null> => {
     try {
       const handler = await Request.get(`${BASE_URL}/${url}/${id}`)
       if (handler.error) {
@@ -139,7 +121,7 @@ export const useUser = defineStore('master.user', () => {
       return null
     }
   }
-  const destroy = async <T>(url: string, id: any) => {
+  const destroy = async (url: string, id: any) => {
     try {
       const handler = await Request.delete(`${BASE_URL}/${url}/${id}`)
       if (handler.error) {

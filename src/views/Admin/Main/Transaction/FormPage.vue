@@ -1,14 +1,13 @@
 <script lang="ts" setup>
-import InputField from '@/components/Common/InputField.vue'
-import Select2, { type ISelect2Option } from '@/components/Common/Select2.vue'
+import InputField from '@/components/Common/InputFieldComponent.vue'
+import Select2 from '@/components/Common/Select2Component.vue'
+import type { IMasterProduct, ISelect2Option } from '@/interfaces'
 import { useAppStore } from '@/stores/app'
-import { useMember } from '@/stores/member'
-import { useTransaction } from '@/stores/transaction'
+import { usePelanggan } from '@/stores/pelanggan'
+import { useProductStore } from '@/stores/product'
+import moment from 'moment'
 import { storeToRefs } from 'pinia'
 import { computed, reactive, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
-import moment from 'moment'
-import { useProduct, type IProduct } from '@/stores/product'
 
 const URL_TARGET = 'main/transaction'
 const { setPageMeta } = useAppStore()
@@ -17,16 +16,14 @@ setPageMeta({
   breadcrumbs: ['Home', 'Transaksi', 'Tambah']
 })
 
-const route = useRoute()
-
 // Dropdown Category
-const memberStore = useMember()
+const memberStore = usePelanggan()
 const selectedMember = ref<ISelect2Option | null>(null)
 const { fetch: fetchMember } = memberStore
 const { items: memberItems } = storeToRefs(memberStore)
 const dropdownItem = computed(() => memberItems.value.map((item) => ({ value: item.id, label: item.name })))
 const searchMember = async (q: string = '') => {
-  await fetchMember('master/member', q)
+  await fetchMember('master/pelanggan', q)
 }
 const onMemberSelect = (selected: any) => {
   selectedMember.value = selected
@@ -34,8 +31,7 @@ const onMemberSelect = (selected: any) => {
 // End Dropdown Category
 
 // Dropdown Category
-const prodocuStore = useProduct()
-const selectedProduct = ref<ISelect2Option | null>(null)
+const prodocuStore = useProductStore()
 const { fetch: fetchProduct } = prodocuStore
 const { items: productItems } = storeToRefs(prodocuStore)
 const dropdownItemProduct = computed(() => productItems.value.map((item) => ({ value: item.id, label: item.name })))
@@ -45,8 +41,7 @@ const searchProduct = async (q: string = '') => {
 // End Dropdown Category
 
 interface IForm {
-  member_id: number | null
-  discount: number
+  customer_id?: number | null
   pay: number
   price: number
   total_price: number
@@ -62,14 +57,13 @@ interface IFormDetailRequest {
 interface IFormDetail {
   product_selected: ISelect2Option | null
   product_id: number | null
-  product: IProduct | null
+  product: IMasterProduct | null
   amount: number
   total_price: number
 }
 
 const form = reactive<IForm>({
-  member_id: null,
-  discount: 0,
+  customer_id: null,
   price: 0,
   pay: 0,
   total_price: 0,
@@ -77,15 +71,7 @@ const form = reactive<IForm>({
   items: []
 })
 
-// change discount
-watch(
-  () => form.discount,
-  () => {
-    updateFormField()
-  }
-)
 // change dibayarkan
-
 watch(
   () => form.pay,
   () => {
@@ -95,24 +81,22 @@ watch(
 
 const purchaseProducts = ref<IFormDetail[]>([])
 
-const paramId = route.params?.id
-
 const onProductSelect = async (selected: any, index: number) => {
   purchaseProducts.value[index].product_selected = selected
   purchaseProducts.value[index].product = (await prodocuStore.first('master/product', selected.value)) ?? null
 }
 
 const submit = () => {
-  form.member_id = (selectedMember?.value?.value as number) ?? null
+  form.customer_id = (selectedMember?.value?.value as number) ?? null
 
-  if (!form.member_id) {
-    delete form.member_id
+  if (!form.customer_id) {
+    delete form.customer_id
   }
 
   form.items = []
   purchaseProducts.value.map((purchaseItem) => {
     form.items.push({
-      product_id: purchaseItem.product_selected.value,
+      product_id: (purchaseItem?.product_selected?.value as number) ?? null,
       amount: purchaseItem.amount
     })
   })
@@ -127,11 +111,7 @@ const updateFormField = () => {
   purchaseProducts.value.map((item) => (totalPrice += item.total_price))
 
   form.price = totalPrice
-  if (form.discount > 0) {
-    form.total_price = totalPrice - form.discount
-  } else {
-    form.total_price = totalPrice
-  }
+  form.total_price = totalPrice
 
   const changeMoney = form.pay - form.total_price
   if (changeMoney > 0) {
@@ -152,12 +132,15 @@ const dynamicFormAdd = () => {
   })
 
   const wacherDynamicField = () => {
-    if (!purchaseProducts.value[lengthItem]) return
+    let item = purchaseProducts.value[lengthItem] as IFormDetail
+
+    if (!item) return
     // ubah price
-    if (!purchaseProducts.value[lengthItem].product?.price || !purchaseProducts.value[lengthItem].amount) {
-      purchaseProducts.value[lengthItem].total_price = 0
-    } else if (purchaseProducts.value[lengthItem].product?.price) {
-      purchaseProducts.value[lengthItem].total_price = purchaseProducts.value[lengthItem].amount * purchaseProducts.value[lengthItem].product?.price
+    else if (!item.product?.price_sell || !item.amount) {
+      item.total_price = 0
+    } else if (item.product?.price_sell) {
+      let price = parseInt(item?.product.price_sell ?? 0)
+      item.total_price = item.amount * price
     }
 
     updateFormField()
@@ -214,63 +197,62 @@ initial()
                 <div class="card">
                   <div class="card-body">
                     <div class="form">
-                      <table class="table">
-                        <thead>
-                          <tr>
-                            <th>Produk</th>
-                            <th>Harga</th>
-                            <th>Jumlah</th>
-                            <th>Sub Total</th>
-                            <th>Aksi</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="(detail, dynamicId) in purchaseProducts">
-                            <td v-if="detail">
-                              <Select2
-                                :selected="detail.product_selected"
-                                placeholder="Cari Produk ..."
-                                :on-select="(selectitem: any) => onProductSelect(selectitem, dynamicId)"
-                                :id="'product_' + dynamicId"
-                                :options="dropdownItemProduct"
-                                :search="searchProduct"
-                              />
-                            </td>
-                            <td v-if="detail" width="150px">
-                              <InputField :value="detail.product?.price" placeholder="0" :disabled="true" />
-                            </td>
-                            <td v-if="detail" width="100px">
-                              <InputField v-model="detail.amount" placeholder="0" />
-                            </td>
-                            <td v-if="detail" width="150px">
-                              <InputField v-model="detail.total_price" placeholder="0" :disabled="true" />
-                            </td>
-                            <td v-if="detail" width="100px">
-                              <button @click="dynamicFormAdd" class="btn btn-primary btn-sm mb-1 mr-1">
-                                <i class="fas fa-plus"></i>
-                              </button>
-                              <button @click="dynamicFormRemove(dynamicId)" class="btn btn-danger btn-sm mb-1 mr-1">
-                                <i class="fas fa-trash"></i>
-                              </button>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                      <div class="table-responsive">
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th>Produk</th>
+                              <th>Harga</th>
+                              <th>Jumlah</th>
+                              <th>Sub Total</th>
+                              <th>Aksi</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr :key="dynamicId" v-for="(detail, dynamicId) in purchaseProducts">
+                              <td>
+                                <Select2
+                                  :selected="detail.product_selected"
+                                  placeholder="Cari Produk ..."
+                                  :on-select="(selectitem: any) => onProductSelect(selectitem, dynamicId)"
+                                  :id="'product_' + dynamicId"
+                                  :options="dropdownItemProduct"
+                                  :search="searchProduct"
+                                />
+                              </td>
+                              <td width="150px">
+                                <InputField :value="detail.product?._price_sell" placeholder="0" :disabled="true" />
+                              </td>
+                              <td width="100px">
+                                <InputField v-model="detail.amount" placeholder="0" />
+                              </td>
+                              <td width="150px">
+                                <InputField v-model="detail.total_price" placeholder="0" :disabled="true" />
+                              </td>
+                              <td width="100px">
+                                <button @click="dynamicFormAdd" class="btn btn-primary btn-sm mb-1 mr-1">
+                                  <i class="fas fa-plus"></i>
+                                </button>
+                                <button @click="dynamicFormRemove(dynamicId)" class="btn btn-danger btn-sm mb-1 mr-1">
+                                  <i class="fas fa-trash"></i>
+                                </button>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
 
                       <div class="row">
                         <div class="col-md-12">
                           <InputField v-model="form.price" placeholder="0" label="Total Harga" type="number" :disabled="true" />
                         </div>
-                        <div class="col-md-6">
-                          <InputField v-model="form.discount" placeholder="0" label="Diskon" type="number" icon="fas fa-dollar-sign" />
-                        </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                           <InputField v-model="form.total_price" placeholder="0" label="Total Akhir" type="number" :disabled="true" icon="fas fa-wallet" />
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                           <InputField v-model="form.pay" placeholder="0" label="Dibayarkan" type="number" icon="fas fa-dollar-sign" />
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                           <InputField v-model="form.back" placeholder="0" label="Kembalian" type="number" :disabled="true" icon="fas fa-dollar-sign" />
                         </div>
                       </div>

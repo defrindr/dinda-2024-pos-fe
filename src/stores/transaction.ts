@@ -1,54 +1,11 @@
 import { BASE_URL } from '@/config'
 import Request from '@/helpers/requests'
+import type { IMeta, ITransaction } from '@/interfaces'
 import router from '@/router'
 import { defineStore } from 'pinia'
 import qs from 'qs'
 import { ref } from 'vue'
 import { useAlertStore } from './alert'
-import type { IMember } from './member'
-import type { IProduct } from './product'
-
-export interface ITransactionDetail {
-  id: number
-  product_id: number
-  product: IProduct
-  price: number
-  amount: number
-  discount: number
-  total_price: number
-
-  price_formatted: number
-  amount_formatted: number
-  discount_formatted: number
-  total_price_formatted: number
-}
-
-export interface ITransaction {
-  id: number
-  transaction_code: string
-  transaction_date: string
-  member_id: number
-  member: IMember
-  details: ITransactionDetail[]
-  price: number
-  discount: number
-  total_price: number
-  pay: number
-  back: number
-  price_formatted: number
-  discount_formatted: number
-  total_price_formatted: number
-  pay_formatted: number
-  back_formatted: number
-}
-
-interface IMeta {
-  currentPage: number
-  total: number
-  perPage: number
-  path: number
-  totalPage: number
-}
 
 export const useTransaction = defineStore('main.transaction', () => {
   const { setErrorAlert, setSuccessAlert } = useAlertStore()
@@ -63,7 +20,7 @@ export const useTransaction = defineStore('main.transaction', () => {
   })
 
   const fetch = async (url: string, search: string = '', page: number = 1) => {
-    let params = qs.stringify({ search, page })
+    const params = qs.stringify({ search, page })
     try {
       const handler = await Request.get(`${BASE_URL}/${url}?${params}`)
       if (handler.error) {
@@ -77,16 +34,13 @@ export const useTransaction = defineStore('main.transaction', () => {
         console.log('response gagal')
         return
       }
+
+      // aliasing variable
       const data = handler.json.data
 
-      metaRequest.value = {
-        currentPage: handler.json.current_page,
-        total: handler.json.total,
-        perPage: handler.json.per_page,
-        path: handler.json.path,
-        totalPage: handler.json.last_page
-      }
-      items.value = data
+      // assign data to ref
+      metaRequest.value = data.meta
+      items.value = data.items
     } catch (error) {
       setErrorAlert('Terjadi kesalahan saat menjalankan aksi')
       console.log('catching', error)
@@ -140,7 +94,7 @@ export const useTransaction = defineStore('main.transaction', () => {
     }
   }
 
-  const first = async <T>(url: string, id: any): Promise<ITransaction | null> => {
+  const first = async (url: string, id: any): Promise<ITransaction | null> => {
     try {
       const handler = await Request.get(`${BASE_URL}/${url}/${id}`)
       if (handler.error) {
@@ -163,7 +117,7 @@ export const useTransaction = defineStore('main.transaction', () => {
       return null
     }
   }
-  const destroy = async <T>(url: string, id: any) => {
+  const destroy = async (url: string, id: any) => {
     try {
       const handler = await Request.delete(`${BASE_URL}/${url}/${id}`)
       if (handler.error) {

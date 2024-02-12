@@ -1,85 +1,44 @@
-import { BASE_URL } from '@/config'
 import Request from '@/helpers/requests'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useAlertStore } from './alert'
-import type { IProduct } from './product'
+import { BASE_URL } from '@/config'
 
-interface IDashboardInfo {
-  category: number
-  storage: number
-  product: number
-  member: number
-  totalTransaction: number
-  countTransaction: number
+type itemsInterface = {
+  icon: string
+  title: string
+  total: number
 }
+export const useDashboardStore = defineStore('store.dashboard', () => {
+  // use another store
+  const { setErrorAlert } = useAlertStore()
 
-interface IDashboardProductBestSelling {
-  id: number
-  name: string
-  jumlah_terjual: number
-}
+  const items = ref<itemsInterface[] | null>(null)
 
-interface IDashboardOutOfStock {
-  productOutOfStock: IProduct[]
-}
+  /**
+   * Mendapatkan data items untuk dashboard
+   */
+  const getItems = async () => {
+    const handler = await Request.get(`${BASE_URL}/main/dashboard/datacount`)
 
-interface IDashboardBestSelling {
-  info: IDashboardInfo
-  productBestSelling: IDashboardProductBestSelling[]
-}
-
-export const useDashboard = defineStore('main.dashboard', () => {
-  const { setErrorAlert, setSuccessAlert } = useAlertStore()
-
-  const outOfStock = ref<IDashboardOutOfStock>()
-  const bestSelling = ref<IDashboardBestSelling>()
-
-  const fetchOutOfStock = async (stock: number) => {
-    try {
-      const handler = await Request.get(`${BASE_URL}/main/dashboard/out-of-stock?stock=${stock}`)
-      if (handler.error) {
-        setErrorAlert('Gagal mengirim permintaan')
-        console.log('request error', handler.error)
-        return
-      }
-
-      if (handler.response?.status !== 200) {
-        setErrorAlert(handler.json.message)
-        console.log('response gagal')
-        return
-      }
-
-      const data = handler.json.items
-      outOfStock.value = data
-    } catch (error) {
-      setErrorAlert('Terjadi kesalahan saat menjalankan aksi')
-      console.log('catching', error)
+    // handle jika request error
+    if (handler.error) {
+      setErrorAlert('Gagal mengirim permintaan')
+      console.log('request error', handler.error)
+      return
+    } else if (handler.response?.status !== 200) {
+      setErrorAlert(handler.json.message)
+      console.log('response gagal')
+      return
     }
+
+    // kembalikan data response
+    const data: itemsInterface[] = handler.json.data
+    items.value = data
   }
 
-  const fetchBestSelling = async (from: string, to: string) => {
-    try {
-      const handler = await Request.get(`${BASE_URL}/main/dashboard/best-selling?from=${from}&to=${to}`)
-      if (handler.error) {
-        setErrorAlert('Gagal mengirim permintaan')
-        console.log('request error', handler.error)
-        return
-      }
-
-      if (handler.response?.status !== 200) {
-        setErrorAlert(handler.json.message)
-        console.log('response gagal')
-        return
-      }
-
-      const data = handler.json.items
-      bestSelling.value = data
-    } catch (error) {
-      setErrorAlert('Terjadi kesalahan saat menjalankan aksi')
-      console.log('catching', error)
-    }
+  return {
+    items,
+    getItems
   }
-
-  return { bestSelling, outOfStock, fetchBestSelling, fetchOutOfStock }
 })

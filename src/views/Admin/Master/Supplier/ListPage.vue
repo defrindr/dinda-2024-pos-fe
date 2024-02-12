@@ -1,19 +1,19 @@
 <script lang="ts" setup>
-import Pagination from '@/components/Common/Pagination.vue'
+import Pagination from '@/components/Common/PaginationComponent.vue'
 import { useAppStore } from '@/stores/app'
-import { usePelanggan } from '@/stores/pelanggan'
+import { useSupplier } from '@/stores/supplier'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 
 const search = ref('')
-const URL_TARGET = 'master/pelanggan'
+const URL_TARGET = 'master/supplier'
 const { setPageMeta } = useAppStore()
 setPageMeta({
-  title: 'List Pelanggan',
-  breadcrumbs: ['Home', 'Pelanggan', 'List']
+  title: 'List Supplier',
+  breadcrumbs: ['Home', 'Supplier', 'List']
 })
 
-const store = usePelanggan()
+const store = useSupplier()
 const { items, metaRequest } = storeToRefs(store)
 
 /**
@@ -71,7 +71,7 @@ initialRequest()
         <div class="card-header">
           <div class="row justify-content-center" style="align-items: center">
             <div class="col-md-8">
-              <router-link :to="`/admin/${URL_TARGET}/create`"> <i class="fas fa-plus"></i> Pelanggan </router-link>
+              <router-link :to="`/admin/${URL_TARGET}/create`"> <i class="fas fa-plus"></i> Supplier </router-link>
             </div>
             <div class="col-md-4 d-flex">
               <input @keyup="onPressEnter($event)" v-model="search" type="text" class="form-control" placeholder="Cari ..." />
@@ -86,24 +86,20 @@ initialRequest()
             <table class="table table-hover table-striped">
               <thead>
                 <th>#</th>
-                <th>Kode Pelanggan</th>
+                <th>Kode Supplier</th>
                 <th>Nama</th>
                 <th>No HP</th>
                 <th>Alamat</th>
-                <th>Jenis Kelamin</th>
-                <th>Tanggal Lahir</th>
                 <th>Status</th>
                 <th>Aksi</th>
               </thead>
               <tbody>
-                <tr v-if="items.length > 0" v-for="(item, index) in items">
+                <tr :key="index" v-for="(item, index) in items">
                   <td>{{ index + 1 + metaRequest?.perPage * (metaRequest?.currentPage - 1) }}</td>
                   <td>{{ item.code }}</td>
                   <td>{{ item.name }}</td>
                   <td>{{ item.phone }}</td>
                   <td>{{ item.address }}</td>
-                  <td>{{ item.gender === 'L' ? 'Laki-Laki' : 'Perempuan' }}</td>
-                  <td>{{ item.dob }}</td>
                   <td>
                     <span v-if="item.status === 'active'" class="badge badge-success">Active</span>
                     <span v-else-if="item.status === 'nonactive'" class="badge badge-danger">Non Active</span>

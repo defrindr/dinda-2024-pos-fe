@@ -1,16 +1,13 @@
 <script lang="ts" setup>
-import FileField from '@/components/Common/FileField.vue'
-import InputField from '@/components/Common/InputField.vue'
-import Select2, { type ISelect2Option } from '@/components/Common/Select2.vue'
+import FileField from '@/components/Common/FileFieldComponent.vue'
+import InputField from '@/components/Common/InputFieldComponent.vue'
+import Select2 from '@/components/Common/Select2Component.vue'
+import type { ISelect2Option, IUser } from '@/interfaces'
 import router from '@/router'
 import { useAppStore } from '@/stores/app'
-import { ROLE_KASIR, ROLE_ADMIN, ROLE_MANAGER } from '@/stores/auth'
-import { useCategory } from '@/stores/category'
-import { useProduct } from '@/stores/product'
-import { useStorage } from '@/stores/storage'
-import { useUser, type IUser } from '@/stores/user'
-import { storeToRefs } from 'pinia'
-import { computed, reactive, ref, watch } from 'vue'
+import { ROLE_ADMIN, ROLE_KASIR, ROLE_MANAGER } from '@/stores/auth'
+import { useUser } from '@/stores/user'
+import { reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 const URL_TARGET = 'master/user'
@@ -64,7 +61,7 @@ const initial = async () => {
       breadcrumbs: ['Home', 'Pengguna', 'Ubah']
     })
 
-    const oldData: IUser | null = await userStore.first<IForm>(URL_TARGET, route.params.id)
+    const oldData: IUser | null = await userStore.first(URL_TARGET, route.params.id)
     if (!oldData) return router.push('/admin/master/user')
     selectedRole.value = { value: oldData.role, label: oldData.role }
     Object.assign(form, {

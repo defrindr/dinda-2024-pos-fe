@@ -3,6 +3,11 @@ import { defineStore } from 'pinia'
 
 const LOCALSTORAGE_APP_SIDEBAR_COLLAPSE = 'app.admin.sidebar.collapse'
 
+interface IPageMeta {
+  title: string
+  breadcrumbs: string[]
+}
+
 export const useAppStore = defineStore('app', () => {
   const appName = ref('Boilerplate VueJS')
 
@@ -24,6 +29,13 @@ export const useAppStore = defineStore('app', () => {
     sidebarCollapse.value = newValue
   }
 
+  const changeLogo = (logo: string) => {
+    appLogo.value = logo
+  }
+  const changeAppName = (name: string) => {
+    appName.value = name
+  }
+
   return {
     appName,
     breadcrumbs,
@@ -31,11 +43,8 @@ export const useAppStore = defineStore('app', () => {
     appLogo,
     sidebarCollapse,
     setPageMeta,
-    changeSidebarCollapse
+    changeSidebarCollapse,
+    changeLogo,
+    changeAppName
   }
 })
-
-interface IPageMeta {
-  title: string
-  breadcrumbs: string[]
-}

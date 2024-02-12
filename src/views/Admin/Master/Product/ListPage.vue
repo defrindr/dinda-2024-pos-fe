@@ -1,39 +1,72 @@
 <script lang="ts" setup>
-import Pagination from '@/components/Common/Pagination.vue'
+import Pagination from '@/components/Common/PaginationComponent.vue'
 import { useAppStore } from '@/stores/app'
-import { useProduct } from '@/stores/product'
+import { useProductStore } from '@/stores/product'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 
-const search = ref('')
+// inisiasi konstanta dan store
 const { setPageMeta } = useAppStore()
+const store = useProductStore()
 const URL_TARGET = 'master/product'
+
+// inisiasi variable
+const search = ref<string>('')
+const { items, metaRequest } = storeToRefs(store)
+
+// mengatur page meta
 setPageMeta({
   title: 'List Produk',
   breadcrumbs: ['Home', 'Produk', 'List']
 })
 
-const masterStore = useProduct()
-const { items, metaRequest } = storeToRefs(masterStore)
-
+/**
+ * Fungsi pencarian dan paginasi data
+ * @param q Keyword
+ * @param page Halaman yang dituju
+ */
 const initialRequest = async (q: string = '', page: number = 1) => {
-  await masterStore.fetch(URL_TARGET, q, page)
+  await store.fetch(URL_TARGET, q, page)
 }
 
+/**
+ * Fungsi untuk menghapus data
+ * @param id Item yang dipilih
+ */
 const destroy = async (id: any) => {
   if (confirm('Yakin ingin menghapus data ini ?')) {
-    masterStore.destroy(URL_TARGET, id)
+    store.destroy(URL_TARGET, id)
   }
 }
 
+/**
+ * Fungsi yang akan dijalankan
+ * ketika tombol pencarian di klik
+ */
 const onSearch = () => {
   initialRequest(search.value)
 }
 
+/**
+ * Fungsi ketika menekan tombol enter di field pencarian
+ */
+const onPressEnter = (event: KeyboardEvent) => {
+  if (event?.key === 'Enter') {
+    onSearch()
+  }
+}
+
+/**
+ * Fungsi untuk berpindah halaman
+ * @param page Halaman yang dituju
+ */
 const movePage = async (page: number) => {
   initialRequest(search.value, page)
 }
 
+/**
+ * onMount
+ */
 initialRequest()
 </script>
 <template>
@@ -46,7 +79,7 @@ initialRequest()
               <router-link to="/admin/master/product/create"> <i class="fas fa-plus"></i> Produk </router-link>
             </div>
             <div class="col-md-4 d-flex">
-              <input v-model="search" type="text" class="form-control" placeholder="Cari ..." />
+              <input @keyup="onPressEnter($event)" v-model="search" type="text" class="form-control" placeholder="Cari ..." />
               <button @click="onSearch" class="btn btn-primary ml-2">
                 <i class="fas fa-search"></i>
               </button>
@@ -58,23 +91,33 @@ initialRequest()
             <table class="table table-hover table-striped">
               <thead>
                 <th>#</th>
-                <th>SKU</th>
-                <th>Nama Produk</th>
                 <th>Kategori</th>
-                <th>Rak</th>
-                <th>Harga</th>
-                <th>Stok</th>
+                <th>Kode Produk</th>
+                <th>Nama Produk</th>
+                <th>Unit</th>
+                <th>Jml Stok</th>
+                <th>Harga Beli</th>
+                <th>Harga Jual</th>
+                <th>Deskripsi Produk</th>
+                <th>Tanggal Masuk</th>
+                <th>Foto</th>
                 <th>Aksi</th>
               </thead>
               <tbody>
-                <tr v-if="items.length > 0" v-for="(item, index) in items">
+                <tr :key="index" v-for="(item, index) in items">
                   <td>{{ index + 1 + metaRequest?.perPage * (metaRequest?.currentPage - 1) }}</td>
-                  <td>{{ item.sku }}</td>
+                  <td>{{ item.category.name }}</td>
+                  <td>{{ item.code }}</td>
                   <td>{{ item.name }}</td>
-                  <td>{{ item.category?.name }}</td>
-                  <td>{{ item.storage?.name }}</td>
-                  <td>{{ item.price }}</td>
+                  <td>{{ item.unit }}</td>
                   <td>{{ item.stock }}</td>
+                  <td>{{ item.price_buy }}</td>
+                  <td>{{ item.price_sell }}</td>
+                  <td>{{ item.description }}</td>
+                  <td>{{ item.date }}</td>
+                  <td>
+                    <img :src="item.photo" :alt="item.name" class="img img-fluid" style="max-width: 75px" />
+                  </td>
                   <td width="150rem">
                     <router-link :to="`/admin/master/product/update/${item.id}`" class="btn btn-warning mb-2 mr-2">
                       <i class="fas fa-pencil-alt"></i>

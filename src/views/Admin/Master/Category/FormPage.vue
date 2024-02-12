@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import InputField from '@/components/Common/InputField.vue'
+import InputField from '@/components/Common/InputFieldComponent.vue'
 import { useAppStore } from '@/stores/app'
 import { useCategory } from '@/stores/category'
 import { reactive } from 'vue'

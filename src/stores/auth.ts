@@ -1,27 +1,13 @@
 import { BASE_URL } from '@/config'
+import type { IAuth, IFormLogin } from '@/interfaces'
+import router from '@/router'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useAlertStore } from './alert'
-import router from '@/router'
 
-export const ROLE_ADMIN   = 'Admin'
-export const ROLE_KASIR   = 'Kasir'
-export const ROLE_MANAGER = 'Manager'
-
-interface ILogin {
-  username: string
-  password: string
-}
-export interface IUser {
-  id: number
-  name: string
-  username: string
-  email: string
-  email_verified_at: string
-  role: string
-  created_at: string
-  updated_at: string
-}
+export const ROLE_ADMIN = 'ADMIN'
+export const ROLE_KASIR = 'KASIR'
+export const ROLE_MANAGER = 'MANAGER'
 
 const LOCALSTORAGE_KEY_TOKEN = 'auth.local.key'
 const LOCALSTORAGE_KEY_USER = 'auth.local.user'
@@ -31,12 +17,12 @@ export const useAuthStore = defineStore('auth', () => {
 
   const token = ref<string>(localStorage.getItem(LOCALSTORAGE_KEY_TOKEN) ?? '')
 
-  let userRaw: string | null = localStorage.getItem(LOCALSTORAGE_KEY_USER)
-  let defaultUser: IUser | null = userRaw ? JSON.parse(userRaw) : null
-  const user = ref<IUser | null>(defaultUser)
+  const userRaw: string | null = localStorage.getItem(LOCALSTORAGE_KEY_USER)
+  const defaultUser: IAuth | null = userRaw ? JSON.parse(userRaw) : null
+  const user = ref<IAuth | null>(defaultUser)
 
   const getDefaultHeader = () => {
-    let defaultHeader: any = {
+    const defaultHeader: any = {
       'Content-Type': 'application/json',
       Accept: 'application/json'
     }
@@ -56,12 +42,12 @@ export const useAuthStore = defineStore('auth', () => {
 
       return json.data
     } catch (error: any) {
-      error = error?.message ?? error
-      alertStore.setErrorAlert(error)
+      const message = error?.message ?? error
+      alertStore.setErrorAlert(message)
     }
   }
 
-  const actionLogin = async (LoginProps: ILogin) => {
+  const actionLogin = async (LoginProps: IFormLogin) => {
     try {
       const response = await fetch(`${BASE_URL}/auth/login`, {
         method: 'POST',
@@ -81,12 +67,12 @@ export const useAuthStore = defineStore('auth', () => {
 
         router.push('/admin/home')
       } else {
-        let message = json?.message ?? json
+        const message = json?.message ?? json
         alertStore.setErrorAlert(message)
       }
     } catch (error: any) {
-      error = error?.message ?? error
-      alertStore.setErrorAlert(error)
+      const message = error?.message ?? error
+      alertStore.setErrorAlert(message)
     }
   }
 
@@ -96,7 +82,9 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem(LOCALSTORAGE_KEY_TOKEN)
     localStorage.removeItem(LOCALSTORAGE_KEY_USER)
 
-    router.push('/auth')
+    console.log('Suksse Logout')
+
+    router.replace('/auth/login')
   }
 
   return { token, user, actionLogin, getUser, actionLogout }

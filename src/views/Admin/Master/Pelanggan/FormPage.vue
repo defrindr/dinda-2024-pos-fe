@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import InputField from '@/components/Common/InputField.vue'
-import Select2, { type ISelect2Option } from '@/components/Common/Select2.vue'
-import TextAreaField from '@/components/Common/TextAreaField.vue'
+import InputField from '@/components/Common/InputFieldComponent.vue'
+import Select2 from '@/components/Common/Select2Component.vue'
+import TextAreaField from '@/components/Common/TextAreaFieldComponent.vue'
+import type { ISelect2Option } from '@/interfaces'
 import { useAppStore } from '@/stores/app'
 import { usePelanggan } from '@/stores/pelanggan'
 import { reactive, ref } from 'vue'

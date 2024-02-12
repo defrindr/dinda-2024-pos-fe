@@ -1,21 +1,22 @@
 <script lang="ts" setup>
-import BoxInfo from '@/components/Common/BoxInfo.vue'
+import BoxInfo from '@/components/Common/BoxInfoComponent.vue'
 import { useAppStore } from '@/stores/app'
-import { useDashboard } from '@/stores/dashboard'
+import { useDashboardStore } from '@/stores/dashboard'
 import { storeToRefs } from 'pinia'
-import { ref } from 'vue'
 
 const { setPageMeta } = useAppStore()
 setPageMeta({
   title: 'Dashboard',
   breadcrumbs: ['Home', 'Dashboard']
 })
+
+const { getItems } = useDashboardStore()
+const { items } = storeToRefs(useDashboardStore())
+
+getItems()
 </script>
 <template>
   <div class="row">
-    <BoxInfo title="Kategori" :total="10" icon="fa fa-tree" />
-    <BoxInfo title="Member" :total="5" icon="fa fa-users" color="bg-warning" />
-    <BoxInfo title="Produkt" :total="2" icon="fa fa-box" color="bg-primary" />
-    <BoxInfo title="Rak" :total="3" icon="fa fa-database" color="bg-danger" />
+    <BoxInfo :key="item.title" v-for="item in items" :title="item.title" :total="item.total" :icon="'fas ' + item.icon" />
   </div>
 </template>
