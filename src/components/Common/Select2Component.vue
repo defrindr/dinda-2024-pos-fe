@@ -1,21 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-
-export interface ISelect2Option {
-  value: string | number
-  label: string
-}
-
-export interface ISelect2 {
-  id: string
-  label?: string
-  onSelect: any
-  search?: any
-  hasSearch?: boolean
-  placeholder?: string
-  selected: null | ISelect2Option
-  options: ISelect2Option[]
-}
+import type { ISelect2 } from '@/interfaces'
 
 const props = withDefaults(defineProps<ISelect2>(), {
   hasSearch: true

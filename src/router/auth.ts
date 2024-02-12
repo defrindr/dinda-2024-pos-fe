@@ -1,11 +1,11 @@
 import AuthLayout from '@/layouts/AuthLayout.vue'
-import LoginView from '@/views/Auth/LoginView.vue'
+import LoginView from '@/views/Auth/LoginPage.vue'
 
 export const AuthRoutes = {
   path: '/auth',
   component: AuthLayout,
-  redirect: (to: any) => {
-    return { path: '/auth/login' }
+  redirect: (path: any = '/auth/login') => {
+    return { path }
   },
   children: [
     {

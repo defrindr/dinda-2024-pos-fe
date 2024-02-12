@@ -1,15 +1,26 @@
 import AdminLayout from '../layouts/AdminLayout.vue'
 
-import DashboardList from '@/views/Admin/Main/Dashboard/DashboardList.vue'
+import DashboardList from '@views/Admin/Main/Dashboard/DashboardList.vue'
 
-import CategoryForm from '@/views/Admin/Master/Category/CategoryForm.vue'
-import CategoryList from '@/views/Admin/Master/Category/CategoryList.vue'
+import CategoryForm from '@views/Admin/Master/Category/FormPage.vue'
+import CategoryList from '@views/Admin/Master/Category/ListPage.vue'
 
-import PelangganForm from '@/views/Admin/Master/Pelanggan/Form.vue'
-import PelangganList from '@/views/Admin/Master/Pelanggan/List.vue'
+import PelangganForm from '@views/Admin/Master/Pelanggan/FormPage.vue'
+import PelangganList from '@views/Admin/Master/Pelanggan/ListPage.vue'
 
-import UserForm from '@/views/Admin/Master/User/UserForm.vue'
-import UserList from '@/views/Admin/Master/User/UserList.vue'
+import SupplierForm from '@views/Admin/Master/Supplier/FormPage.vue'
+import SupplierList from '@views/Admin/Master/Supplier/ListPage.vue'
+
+import UserForm from '@views/Admin/Master/User/FormPage.vue'
+import UserList from '@views/Admin/Master/User/ListPage.vue'
+
+import SettingForm from '@views/Admin/Master/Setting/FormPage.vue'
+
+import ProductForm from '@views/Admin/Master/Product/FormPage.vue'
+import ProductList from '@views/Admin/Master/Product/ListPage.vue'
+
+import TransactionForm from '@views/Admin/Main/Transaction/FormPage.vue'
+import TransactionList from '@views/Admin/Main/Transaction/ListPage.vue'
 
 const CategoryRoutes = [
   {
@@ -41,6 +52,35 @@ const PelangganRoutes = [
   }
 ]
 
+const SupplierRoutes = [
+  {
+    path: 'master/supplier',
+    component: SupplierList
+  },
+  {
+    path: 'master/supplier/create',
+    component: SupplierForm
+  },
+  {
+    path: 'master/supplier/update/:id',
+    component: SupplierForm
+  }
+]
+const ProductRoutes = [
+  {
+    path: 'master/product',
+    component: ProductList
+  },
+  {
+    path: 'master/product/create',
+    component: ProductForm
+  },
+  {
+    path: 'master/product/update/:id',
+    component: ProductForm
+  }
+]
+
 const UserRoutes = [
   {
     path: 'master/user',
@@ -56,10 +96,21 @@ const UserRoutes = [
   }
 ]
 
+const TransactionRoutes = [
+  {
+    path: 'main/transaction',
+    component: TransactionList
+  },
+  {
+    path: 'main/transaction/create',
+    component: TransactionForm
+  }
+]
+
 export const AdminRoutes = {
   path: '/admin',
   component: AdminLayout,
-  redirect: (to: any) => {
+  redirect: () => {
     return { path: '/admin/home' }
   },
   children: [
@@ -67,8 +118,15 @@ export const AdminRoutes = {
       path: 'home',
       component: DashboardList
     },
+    {
+      path: '/admin/master/setting',
+      component: SettingForm
+    },
+    ...SupplierRoutes,
+    ...ProductRoutes,
     ...PelangganRoutes,
     ...CategoryRoutes,
-    ...UserRoutes
+    ...UserRoutes,
+    ...TransactionRoutes
   ]
 }

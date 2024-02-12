@@ -1,4 +1,3 @@
-import router from '@/router'
 import { useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
 
@@ -16,11 +15,25 @@ interface IOptionRequest {
   body?: IOptionRequestBody
 }
 
+function buildFormData(formData: any, data: any, parentKey?: string | null) {
+  if (data && typeof data === 'object' && !(data instanceof Date) && !(data instanceof File) && !(data instanceof Blob)) {
+    Object.keys(data).forEach((key) => {
+      buildFormData(formData, data[key], parentKey ? `${parentKey}[${key}]` : key)
+    })
+  } else {
+    const value = data == null ? '' : data
+
+    formData.append(parentKey, value)
+  }
+
+  return formData
+}
+
 const BaseRequest = async (url: string, options?: IOptionRequest) => {
   const authStore = useAuthStore()
   const { token } = storeToRefs(authStore)
 
-  let headers: IOptionRequestHeader = {
+  const headers: IOptionRequestHeader = {
     'Content-Type': 'application/json',
     Accept: 'application/json'
   }
@@ -50,11 +63,11 @@ const BaseRequest = async (url: string, options?: IOptionRequest) => {
       body = new FormData()
 
       const optionsBody: IOptionRequestBody = options.body
-      Object.keys(optionsBody).map((bodyKey) => {
-        body.append(bodyKey, optionsBody[bodyKey])
-      })
+      body = buildFormData(body, optionsBody)
     }
   }
+
+  console.log('body', body)
 
   const method = options?.method?.toUpperCase() ?? 'GET'
 

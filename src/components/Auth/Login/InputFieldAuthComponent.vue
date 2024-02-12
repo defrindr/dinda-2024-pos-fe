@@ -12,7 +12,7 @@ defineEmits(['update:modelValue'])
 
 <template>
   <div class="input-group mb-3">
-    <input :value="modelValue" @input="$emit('update:modelValue', $event.target.value)" :type="type" class="form-control" :placeholder="placeholder" />
+    <input :value="modelValue" @input="$emit('update:modelValue', ($event.target as any).value)" :type="type" class="form-control" :placeholder="placeholder" />
     <div v-if="icon" class="input-group-append">
       <div class="input-group-text">
         <span :class="icon"></span>

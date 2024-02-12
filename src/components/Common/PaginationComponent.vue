@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref, type Ref } from 'vue'
-
 interface IPaginationMeta {
   currentPage: number
   totalPage: number
@@ -13,8 +11,6 @@ interface IPagination {
 
 const props = defineProps<IPagination>()
 const neighborSize = 2
-
-const listPage = ref([])
 </script>
 <template>
   <ul class="pagination m-0 float-right">

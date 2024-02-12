@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import Alert from '@/components/Common/Alert.vue'
+import Alert from '@/components/Common/NotificationAlert.vue'
 import router from '@/router'
 import { useAppStore } from '@/stores/app'
 import { useAuthStore } from '@/stores/auth'
@@ -11,7 +11,6 @@ const authStore = useAuthStore()
 const { appName } = storeToRefs(appStore)
 const { user } = storeToRefs(authStore)
 
-console.log('auth', user.value)
 // Check Authentication
 if (user.value) {
   router.push('/admin/home')

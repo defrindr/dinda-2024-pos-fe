@@ -2,7 +2,7 @@
 import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'
 import SidebarItem from './SidebarItem.vue'
-import { useAuthStore } from '@/stores/auth'
+import { ROLE_KASIR, ROLE_MANAGER, useAuthStore } from '@/stores/auth'
 import { ROLE_ADMIN } from '@/stores/auth'
 
 const store = useAppStore()
@@ -12,6 +12,8 @@ const authStore = useAuthStore()
 const { user } = storeToRefs(authStore)
 
 const isAdmin = user.value?.role == ROLE_ADMIN
+const isCashier = user.value?.role == ROLE_KASIR
+const isManager = user.value?.role == ROLE_MANAGER
 </script>
 <template>
   <!-- Main Sidebar Container -->
@@ -31,11 +33,13 @@ const isAdmin = user.value?.role == ROLE_ADMIN
           <li class="nav-header">PENJUALAN</li>
           <SidebarItem label="Transaksi" to="/admin/main/transaction" icon="fas fa-wallet" />
           <li v-if="isAdmin" class="nav-header">MASTER</li>
-          <SidebarItem v-if="isAdmin" label="Kategori" to="/admin/master/category" icon="fas fa-database" />
-          <SidebarItem v-if="isAdmin" label="Pelanggan" to="/admin/master/pelanggan" icon="fas fa-users" />
-          <SidebarItem v-if="isAdmin" label="Produk" to="/admin/master/product" icon="fas fa-box" />
+          <SidebarItem v-if="isAdmin || isManager" label="Kategori" to="/admin/master/category" icon="fas fa-database" />
+          <SidebarItem v-if="isAdmin || isCashier" label="Pelanggan" to="/admin/master/pelanggan" icon="fas fa-users" />
+          <SidebarItem v-if="isAdmin" label="Supplier" to="/admin/master/supplier" icon="fas fa-truck" />
+          <SidebarItem v-if="isAdmin || isManager" label="Produk" to="/admin/master/product" icon="fas fa-box" />
           <li v-if="isAdmin" class="nav-header">SISTEM</li>
           <SidebarItem v-if="isAdmin" label="Pengguna" to="/admin/master/user" icon="fas fa-user" />
+          <SidebarItem v-if="isAdmin" label="Pengaturan" to="/admin/master/setting" icon="fas fa-wrench" />
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
