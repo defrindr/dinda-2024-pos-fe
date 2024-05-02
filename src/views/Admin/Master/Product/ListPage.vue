@@ -60,9 +60,9 @@ const onPressEnter = (event: KeyboardEvent) => {
  * Fungsi untuk berpindah halaman
  * @param page Halaman yang dituju
  */
-const movePage = async (page: number) => {
-  initialRequest(search.value, page)
-}
+// const movePage = async (page: number) => {
+//   initialRequest(search.value, page)
+// }
 
 /**
  * onMount
@@ -131,9 +131,9 @@ initialRequest()
             </table>
           </div>
         </div>
-        <div class="card-footer">
+        <!-- <div class="card-footer">
           <Pagination v-if="metaRequest" :meta="metaRequest" :fetch="movePage" />
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
