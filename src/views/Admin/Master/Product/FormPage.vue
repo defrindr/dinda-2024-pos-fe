@@ -22,6 +22,10 @@ interface IForm {
   description: string
   date: string
   photo: any
+  per_pack: number
+  per_item: number
+  unit_item: string
+  price_sell_item: number
 }
 
 const URL_TARGET = 'master/product'
@@ -44,7 +48,11 @@ const form = reactive<IForm>({
   price_sell: 0,
   description: '',
   date: '',
-  photo: null
+  photo: null,
+  per_pack: 0,
+  per_item: 0,
+  unit_item: '',
+  price_sell_item: 0
 })
 
 const { fetch: fetchCategory } = categoryStore
@@ -141,7 +149,16 @@ initial()
                 <InputField v-model="form.name" label="Nama" type="text" placeholder="Nescafe" />
               </div>
               <div class="col-md-4">
-                <InputField v-model="form.unit" label="Unit" type="text" placeholder="Unit" icon="fas fa-info" />
+                <InputField v-model="form.unit" label="Satuan Besar" type="text" placeholder="Karung" icon="fas fa-info" />
+              </div>
+              <div class="col-md-4">
+                <InputField v-model="form.unit_item" label="Satuan Kecil" type="text" placeholder="KG" icon="fas fa-info" />
+              </div>
+              <div class="col-md-4">
+                <InputField v-model="form.per_item" label="Per Item" type="number" placeholder="1" icon="fas fa-info" />
+              </div>
+              <div class="col-md-4">
+                <InputField v-model="form.per_pack" label="Per Pack" type="number" placeholder="20" icon="fas fa-info" />
               </div>
               <div class="col-md-4">
                 <InputField v-model="form.stock" label="Stok" type="number" placeholder="0" icon="fas fa-box" />
@@ -151,6 +168,9 @@ initial()
               </div>
               <div class="col-md-4">
                 <InputField v-model="form.price_buy" label="Harga Beli" type="number" placeholder="999999" icon="fas fa-dollar-sign" />
+              </div>
+              <div class="col-md-4">
+                <InputField v-model="form.price_sell_item" label="Harga Jual Satuan" type="number" placeholder="999999" icon="fas fa-dollar-sign" />
               </div>
               <div class="col-md-6">
                 <InputField v-model="form.date" label="Tanggal Masuk" type="date" placeholder="" icon="fas fa-calendar" />

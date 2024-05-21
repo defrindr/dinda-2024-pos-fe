@@ -94,10 +94,14 @@ initialRequest()
                 <th>Kategori</th>
                 <th>Kode Produk</th>
                 <th>Nama Produk</th>
-                <th>Unit</th>
+                <th>Satuan Besar</th>
+                <th>Satuan Kecil</th>
+                <th>Per Pack</th>
+                <th>Per Item</th>
                 <th>Jml Stok</th>
                 <th>Harga Beli</th>
                 <th>Harga Jual</th>
+                <th>Harga Per Item</th>
                 <th>Deskripsi Produk</th>
                 <th>Tanggal Masuk</th>
                 <th>Foto</th>
@@ -110,9 +114,13 @@ initialRequest()
                   <td>{{ item.code }}</td>
                   <td>{{ item.name }}</td>
                   <td>{{ item.unit }}</td>
+                  <td>{{ item.unit_item }}</td>
+                  <td>{{ item.per_pack }}</td>
+                  <td>{{ item.per_item }}</td>
                   <td>{{ item.stock }}</td>
                   <td>{{ item.price_buy }}</td>
                   <td>{{ item.price_sell }}</td>
+                  <td>{{ item.price_sell_item }}</td>
                   <td>{{ item.description }}</td>
                   <td>{{ item.date }}</td>
                   <td>

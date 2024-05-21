@@ -77,6 +77,10 @@ export interface IMasterProduct {
   description: string
   date: string
   photo: string
+  per_pack: number
+  per_item: number
+  unit_item: string
+  price_sell_item: number
 }
 
 export interface ITransactionDetail {
