@@ -51,6 +51,7 @@ interface IForm {
 
 interface IFormDetailRequest {
   product_id: number | null
+  satuan: number | null
   amount: number
 }
 
@@ -59,6 +60,7 @@ interface IFormDetail {
   product_id: number | null
   product: IMasterProduct | null
   amount: number
+  satuan: number | null
   total_price: number
 }
 
@@ -97,6 +99,7 @@ const submit = () => {
   purchaseProducts.value.map((purchaseItem) => {
     form.items.push({
       product_id: (purchaseItem?.product_selected?.value as number) ?? null,
+      satuan: purchaseItem.satuan,
       amount: purchaseItem.amount
     })
   })
@@ -128,18 +131,21 @@ const dynamicFormAdd = () => {
     product_id: null,
     product: null,
     amount: 0,
+    satuan: null,
     total_price: 0
   })
 
   const wacherDynamicField = () => {
     let item = purchaseProducts.value[lengthItem] as IFormDetail
 
+    let harga = item.satuan === 1 ? item.product?.harga_pack : item.product?.harga_ecer
+
     if (!item) return
     // ubah price
-    else if (!item.product?.price_sell || !item.amount) {
+    else if (!harga || !item.amount) {
       item.total_price = 0
-    } else if (item.product?.price_sell) {
-      let price = parseInt(item?.product.price_sell ?? 0)
+    } else if (harga) {
+      let price = harga ?? 0
       item.total_price = item.amount * price
     }
 
@@ -202,6 +208,7 @@ initial()
                           <thead>
                             <tr>
                               <th>Produk</th>
+                              <th>Satuan</th>
                               <th>Harga</th>
                               <th>Jumlah</th>
                               <th>Sub Total</th>
@@ -219,12 +226,31 @@ initial()
                                   :options="dropdownItemProduct"
                                   :search="searchProduct"
                                 />
+                                <span v-if="detail.product">
+                                  {{ (detail.product.per_pack === 0 || detail.product.stock_pack === 0 ? 0 : detail.product.stock_pack / detail.product.per_pack) + ' ' + detail.product.satuan_pack }} / <br />
+                                  {{ detail.product.stock_pack + ' ' + detail.product.satuan_ecer }}
+                                </span>
+                              </td>
+                              <td>
+                                <select v-model="detail.satuan" name="" id="" class="form-control">
+                                  <option value="">-- Pilih Satuan --</option>
+                                  <option :value="0">{{ detail.product?.satuan_ecer }}</option>
+                                  <option :value="1">{{ detail.product?.satuan_pack }}</option>
+                                </select>
                               </td>
                               <td width="150px">
-                                <InputField :value="detail.product?._price_sell" placeholder="0" :disabled="true" />
+                                <InputField :value="detail.satuan === 1 ? detail.product?._harga_pack : detail.product?._harga_ecer" placeholder="0" :disabled="true" />
                               </td>
                               <td width="100px">
-                                <InputField v-model="detail.amount" placeholder="0" />
+                                <InputField
+                                  type="number"
+                                  v-model="detail.amount"
+                                  placeholder="0"
+                                  :max="
+                                    detail.satuan === 1 ? (detail.product == undefined || detail.product?.per_pack === 0 || detail.product?.stock_pack === 0 ? 0 : detail.product?.stock_pack / detail.product?.per_pack) : detail.product?.stock_pack
+                                  "
+                                  :min="0"
+                                />
                               </td>
                               <td width="150px">
                                 <InputField v-model="detail.total_price" placeholder="0" :disabled="true" />

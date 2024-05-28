@@ -12,20 +12,20 @@ import { computed, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 interface IForm {
-  category_id: number | null
+  category_id: number|null
   code: string
   name: string
-  unit: string
-  stock: number
-  price_buy: number
-  price_sell: number
+  stock_pack: number
+  satuan_pack: string
+  per_pack: number
+  harga_pack: number
+  harga_ecer: number
+  jumlah_ecer: number
+  satuan_ecer: string
+  harga_beli: number
   description: string
   date: string
-  photo: any
-  per_pack: number
-  per_item: number
-  unit_item: string
-  price_sell_item: number
+  photo: string|null
 }
 
 const URL_TARGET = 'master/product'
@@ -42,17 +42,17 @@ const form = reactive<IForm>({
   category_id: null,
   code: 'PRD',
   name: '',
-  unit: '',
-  stock: 0,
-  price_buy: 0,
-  price_sell: 0,
+  satuan_pack: '',
+  stock_pack: 0,
+  harga_beli: 0,
+  harga_pack: 0,
   description: '',
   date: '',
   photo: null,
   per_pack: 0,
-  per_item: 0,
-  unit_item: '',
-  price_sell_item: 0
+  jumlah_ecer: 0,
+  satuan_ecer: '',
+  harga_ecer: 0
 })
 
 const { fetch: fetchCategory } = categoryStore
@@ -149,28 +149,28 @@ initial()
                 <InputField v-model="form.name" label="Nama" type="text" placeholder="Nescafe" />
               </div>
               <div class="col-md-4">
-                <InputField v-model="form.unit" label="Satuan Besar" type="text" placeholder="Karung" icon="fas fa-info" />
+                <InputField v-model="form.satuan_pack" label="Satuan Besar" type="text" placeholder="Karung" icon="fas fa-info" />
               </div>
               <div class="col-md-4">
-                <InputField v-model="form.unit_item" label="Satuan Kecil" type="text" placeholder="KG" icon="fas fa-info" />
+                <InputField v-model="form.satuan_ecer" label="Satuan Kecil" type="text" placeholder="KG" icon="fas fa-info" />
               </div>
               <div class="col-md-4">
-                <InputField v-model="form.per_item" label="Per Item" type="number" placeholder="1" icon="fas fa-info" />
+                <InputField v-model="form.jumlah_ecer" label="Per Item" type="number" placeholder="1" icon="fas fa-info" />
               </div>
               <div class="col-md-4">
                 <InputField v-model="form.per_pack" label="Per Pack" type="number" placeholder="20" icon="fas fa-info" />
               </div>
               <div class="col-md-4">
-                <InputField v-model="form.stock" label="Stok" type="number" placeholder="0" icon="fas fa-box" />
+                <InputField v-model="form.stock_pack" label="Stok" type="number" placeholder="0" icon="fas fa-box" />
               </div>
               <div class="col-md-4">
-                <InputField v-model="form.price_sell" label="Harga Jual" type="number" placeholder="999999" icon="fas fa-dollar-sign" />
+                <InputField v-model="form.harga_pack" label="Harga Jual" type="number" placeholder="999999" icon="fas fa-dollar-sign" />
               </div>
               <div class="col-md-4">
-                <InputField v-model="form.price_buy" label="Harga Beli" type="number" placeholder="999999" icon="fas fa-dollar-sign" />
+                <InputField v-model="form.harga_beli" label="Harga Beli" type="number" placeholder="999999" icon="fas fa-dollar-sign" />
               </div>
               <div class="col-md-4">
-                <InputField v-model="form.price_sell_item" label="Harga Jual Satuan" type="number" placeholder="999999" icon="fas fa-dollar-sign" />
+                <InputField v-model="form.harga_ecer" label="Harga Jual Satuan" type="number" placeholder="999999" icon="fas fa-dollar-sign" />
               </div>
               <div class="col-md-6">
                 <InputField v-model="form.date" label="Tanggal Masuk" type="date" placeholder="" icon="fas fa-calendar" />

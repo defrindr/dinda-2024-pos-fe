@@ -93,6 +93,7 @@ const openStruk = (transactionCode: string) => {
           <thead>
             <th>#</th>
             <th>Produk</th>
+            <th>Satuan</th>
             <th>Harga</th>
             <th>Jumlah</th>
             <th>Sub Total</th>
@@ -101,6 +102,7 @@ const openStruk = (transactionCode: string) => {
             <tr :key="index" v-for="(detail, index) in selectedItem.items">
               <td>{{ index + 1 }}</td>
               <td>{{ detail.product?.name }}</td>
+              <td>{{ detail.satuan }}</td>
               <td>{{ detail.price }}</td>
               <td>{{ detail.quantity }}</td>
               <td>{{ detail.total_price }}</td>

@@ -8,6 +8,8 @@ interface IInputField {
   value?: any
   disabled?: boolean
   readonly?: boolean
+  max?: number
+  min?: number
 }
 
 const props = withDefaults(defineProps<IInputField>(), {
@@ -25,7 +27,7 @@ function emitModelValue(event: Event) {
   <div class="form-group">
     <label v-if="props.label" for="">{{ props.label }}</label>
     <div class="input-group">
-      <input :readonly="readonly" :disabled="props.disabled" :value="modelValue ?? props.value" @input="emitModelValue" :type="props.type" class="form-control" :placeholder="props.placeholder" />
+      <input :readonly="readonly" :disabled="props.disabled" :value="modelValue ?? props.value" @input="emitModelValue" :type="props.type" class="form-control" :placeholder="props.placeholder" :max="max"  :min="min" />
       <div v-if="props.icon" class="input-group-append">
         <div class="input-group-text">
           <span :class="props.icon"></span>

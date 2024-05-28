@@ -65,28 +65,33 @@ export interface IMasterCategory {
 export interface IMasterProduct {
   id: number
   category_id: number
-  category: IMasterCategory
   code: string
   name: string
-  unit: string
-  stock: string
-  price_buy: string
-  _price_buy: string
-  price_sell: string
-  _price_sell: string
+  stock_pack: number
+  satuan_pack: string
+  per_pack: number
+  harga_pack: number
+  harga_ecer: number
+  jumlah_ecer: number
+  satuan_ecer: string
+  harga_beli: number
   description: string
   date: string
   photo: string
-  per_pack: number
-  per_item: number
-  unit_item: string
-  price_sell_item: number
+  created_at: string
+  updated_at: string
+  deleted_at: null
+  _harga_pack: string
+  _harga_ecer: string
+  _harga_beli: string
+  category: IMasterCategory
 }
 
 export interface ITransactionDetail {
   id: number
   product_id: number
   price: number
+  satuan: string
   quantity: number
   total_price: number
   created_at: Date

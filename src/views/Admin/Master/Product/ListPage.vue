@@ -94,34 +94,34 @@ initialRequest()
                 <th>Kategori</th>
                 <th>Kode Produk</th>
                 <th>Nama Produk</th>
-                <th>Satuan Besar</th>
-                <th>Satuan Kecil</th>
+                <!-- <th>Satuan Besar</th>
+                <th>Satuan Kecil</th> -->
                 <th>Per Pack</th>
-                <th>Per Item</th>
+                <!-- <th>Per Item</th> -->
                 <th>Jml Stok</th>
                 <th>Harga Beli</th>
                 <th>Harga Jual</th>
                 <th>Harga Per Item</th>
-                <th>Deskripsi Produk</th>
+                <!-- <th>Deskripsi Produk</th> -->
                 <th>Tanggal Masuk</th>
                 <th>Foto</th>
                 <th>Aksi</th>
               </thead>
               <tbody>
                 <tr :key="index" v-for="(item, index) in items">
-                  <td>{{ index + 1 + metaRequest?.perPage * (metaRequest?.currentPage - 1) }}</td>
+                  <td>{{ index + 1}}</td>
                   <td>{{ item.category.name }}</td>
                   <td>{{ item.code }}</td>
                   <td>{{ item.name }}</td>
-                  <td>{{ item.unit }}</td>
-                  <td>{{ item.unit_item }}</td>
+                  <!-- <td>{{ item.satuan_pack }}</td>
+                  <td>{{ item.satuan_ecer }}</td> -->
                   <td>{{ item.per_pack }}</td>
-                  <td>{{ item.per_item }}</td>
-                  <td>{{ item.stock }}</td>
-                  <td>{{ item.price_buy }}</td>
-                  <td>{{ item.price_sell }}</td>
-                  <td>{{ item.price_sell_item }}</td>
-                  <td>{{ item.description }}</td>
+                  <!-- <td>{{ item.jumlah_ecer }}</td> -->
+                  <td>{{ item.stock_pack }} {{ item.satuan_ecer }}</td>
+                  <td>{{ item.harga_beli }}</td>
+                  <td>{{ item.harga_pack }}</td>
+                  <td>{{ item.harga_ecer }}</td>
+                  <!-- <td>{{ item.description }}</td> -->
                   <td>{{ item.date }}</td>
                   <td>
                     <img :src="item.photo" :alt="item.name" class="img img-fluid" style="max-width: 75px" />
