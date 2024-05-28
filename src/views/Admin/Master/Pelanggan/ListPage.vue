@@ -87,6 +87,7 @@ initialRequest()
               <thead>
                 <th>#</th>
                 <th>Kode Pelanggan</th>
+                <th>NIK</th>
                 <th>Nama</th>
                 <th>No HP</th>
                 <th>Alamat</th>
@@ -99,6 +100,7 @@ initialRequest()
                 <tr :key="index" v-for="(item, index) in items">
                   <td>{{ index + 1 + metaRequest?.perPage * (metaRequest?.currentPage - 1) }}</td>
                   <td>{{ item.code }}</td>
+                  <td>{{ item.nik }}</td>
                   <td>{{ item.name }}</td>
                   <td>{{ item.phone }}</td>
                   <td>{{ item.address }}</td>

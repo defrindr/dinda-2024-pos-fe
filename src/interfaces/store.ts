@@ -49,6 +49,7 @@ export interface IMasterSetting {
 export interface IMasterPelanggan {
   id: number
   code: string
+  nik: string
   name: string
   phone: string
   address: string

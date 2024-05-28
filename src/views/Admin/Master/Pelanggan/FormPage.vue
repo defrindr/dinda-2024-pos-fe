@@ -20,6 +20,7 @@ const store = usePelanggan()
 
 interface IForm {
   code: string
+  nik: string
   name: string
   phone: string
   address: string
@@ -29,6 +30,7 @@ interface IForm {
 }
 const form = reactive<IForm>({
   code: '',
+  nik: '',
   name: '',
   phone: '',
   address: '',
@@ -107,6 +109,9 @@ initial()
                 <InputField v-model="form.code" label="Kode" type="text" placeholder="PLG00000001" icon="fas fa-id-card" />
               </div>
               <div class="col-md-6">
+                <InputField v-model="form.nik" label="NIK" type="text" placeholder="350207********" icon="fas fa-id-card" />
+              </div>
+              <div class="col-md-6">
                 <InputField v-model="form.name" label="Nama" type="text" placeholder="John Doe" icon="fas fa-user" />
               </div>
               <div class="col-md-6">
@@ -118,7 +123,7 @@ initial()
               <div class="col-md-6">
                 <Select2 id="gender" :hasSearch="false" v-model="form.gender" label="Jenis Kelamin" icon="fas fa-genders" :onSelect="onSelectGender" :selected="selectedGender" :options="optionsGender" />
               </div>
-              <div class="col-md-6">
+              <div class="col-md-12">
                 <Select2 id="status" :hasSearch="false" v-model="form.status" label="Status" type="date" icon="fas fa-status" :onSelect="onSelectStatus" :selected="selectedStatus" :options="optionsStatus" />
               </div>
               <div class="col-md-12">
