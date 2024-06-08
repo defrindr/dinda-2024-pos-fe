@@ -97,6 +97,8 @@ const openStruk = (transactionCode: string) => {
             <th>Harga</th>
             <th>Jumlah</th>
             <th>Sub Total</th>
+            <!-- <th>H.beli</th>
+            <th>Untung</th> -->
           </thead>
           <tbody>
             <tr :key="index" v-for="(detail, index) in selectedItem.items">
@@ -106,6 +108,8 @@ const openStruk = (transactionCode: string) => {
               <td>{{ detail.price }}</td>
               <td>{{ detail.quantity }}</td>
               <td>{{ detail.total_price }}</td>
+              <!-- <td>{{ detail.product?.harga_beli }}</td>
+              <td>{{ detail.total_price.replace('Rp', '').replace(',00', '').replaceAll('.', '') - detail.product?.harga_beli * detail.quantity }}</td> -->
             </tr>
           </tbody>
         </table>

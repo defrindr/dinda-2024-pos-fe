@@ -22,6 +22,8 @@ import ProductList from '@views/Admin/Master/Product/ListPage.vue'
 import TransactionForm from '@views/Admin/Main/Transaction/FormPage.vue'
 import TransactionList from '@views/Admin/Main/Transaction/ListPage.vue'
 
+import ReportTransaction from '@views/Admin/Main/Report/Index.vue'
+
 const CategoryRoutes = [
   {
     path: 'master/category',
@@ -100,6 +102,10 @@ const TransactionRoutes = [
   {
     path: 'main/transaction',
     component: TransactionList
+  },
+  {
+    path: 'main/report',
+    component: ReportTransaction
   },
   {
     path: 'main/transaction/create',

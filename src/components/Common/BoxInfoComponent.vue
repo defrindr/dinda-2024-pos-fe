@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<IBoxInfo>(), {
   <div :class="props.size">
     <div :class="'small-box ' + props.color">
       <div class="inner">
-        <h3>{{ props.total }}</h3>
+        <h3>{{ new Intl.NumberFormat().format(props.total ?? 0) }}</h3>
 
         <p>{{ props.title }}</p>
       </div>
