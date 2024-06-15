@@ -42,7 +42,7 @@ const onMemberSelect = (selected: any) => {
 const prodocuStore = useProductStore()
 const { fetch: fetchProduct } = prodocuStore
 const { items: productItems } = storeToRefs(prodocuStore)
-const dropdownItemProduct = computed(() => productItems.value.map((item) => ({ value: item.id, label: item.name })))
+const dropdownItemProduct = computed(() => productItems.value.map((item) => ({ value: item.id, labelFull: `${item.name}<br /><span style='font-size:10px'>${item.stock_pack} ${item.satuan_ecer} | ${item._harga_ecer}</span>`, label: item.name })))
 const searchProduct = async (q: string = '') => {
   await fetchProduct('master/product', q)
 }
@@ -64,6 +64,7 @@ interface IFormDetailRequest {
 }
 
 interface IFormDetail {
+  product_selected: ISelect2Option | null
   product_id: number | null
   product: IMasterProduct | null
   amount: number
@@ -90,9 +91,15 @@ watch(
 
 const purchaseProducts = ref<IFormDetail[]>([])
 
-const onProductSelect = async (index: number) => {
-  let productId = purchaseProducts.value[index].product_id
-  purchaseProducts.value[index].product = (await prodocuStore.first('master/product', productId)) ?? null
+// const onProductSelect = async (index: number) => {
+//   let productId = purchaseProducts.value[index].product_id
+//   purchaseProducts.value[index].product = (await prodocuStore.first('master/product', productId)) ?? null
+// }
+
+const onProductSelect = async (selected: ISelect2Option, index: number) => {
+  purchaseProducts.value[index].product_selected = selected
+  purchaseProducts.value[index].product_id = parseInt(selected.value.toString())
+  purchaseProducts.value[index].product = (await prodocuStore.first('master/product', selected.value)) ?? null
 }
 
 const submit = () => {
@@ -138,6 +145,7 @@ const updateFormField = () => {
 const dynamicFormAdd = () => {
   const lengthItem = purchaseProducts.value.length
   purchaseProducts.value.push({
+    product_selected: null,
     product_id: null,
     product: null,
     amount: 0,
@@ -232,20 +240,20 @@ initial()
                           <tbody>
                             <tr :key="dynamicId" v-for="(detail, dynamicId) in purchaseProducts">
                               <td>
-                                <select ref="itemRefs" name="product_selected" id="" v-model="detail.product_id" @change="onProductSelect(dynamicId)" class="form-control">
+                                <!-- <select ref="itemRefs" name="product_selected" id="" v-model="detail.product_id" @change="onProductSelect(dynamicId)" class="form-control">
                                   <option value="">-- Pilih Produk --</option>
                                   <option :selected="detail.product_id === item.value" :value="item.value" :key="item.value" v-for="item in dropdownItemProduct">
                                     {{ item.label }}
                                   </option>
-                                </select>
-                                <!-- <Select2
+                                </select> -->
+                                <Select2
                                   :selected="detail.product_selected"
                                   placeholder="Cari Produk ..."
                                   :on-select="(selectitem: any) => onProductSelect(selectitem, dynamicId)"
                                   :id="'product_' + dynamicId"
                                   :options="dropdownItemProduct"
                                   :search="searchProduct"
-                                /> -->
+                                />
                                 <span v-if="detail.product">
                                   {{ (detail.product.per_pack === 0 || detail.product.stock_pack === 0 ? 0 : detail.product.stock_pack / detail.product.per_pack) + ' ' + detail.product.satuan_pack }} / <br />
                                   {{ detail.product.stock_pack + ' ' + detail.product.satuan_ecer }}

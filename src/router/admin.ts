@@ -22,7 +22,7 @@ import ProductList from '@views/Admin/Master/Product/ListPage.vue'
 import TransactionForm from '@views/Admin/Main/Transaction/FormPage.vue'
 import TransactionList from '@views/Admin/Main/Transaction/ListPage.vue'
 
-import ReportTransaction from '@views/Admin/Main/Report/Index.vue'
+import ReportTransaction from '@views/Admin/Main/Report/ListPage.vue'
 
 const CategoryRoutes = [
   {

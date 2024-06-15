@@ -64,7 +64,7 @@ watch(isModalOpen, (newVal: boolean) => {
               <table class="table table-hover table-striped">
                 <tbody>
                   <tr v-for="option in options" :key="option.value">
-                    <td :colspan="option.value === props.selected?.value ? 2 : 1" :class="option.value === props.selected?.value && 'bg-primary text-white'">{{ option.label }}</td>
+                    <td :colspan="option.value === props.selected?.value ? 2 : 1" :class="option.value === props.selected?.value && 'bg-primary text-white'" v-html="option.labelFull ?? option.label"></td>
                     <td v-if="option.value !== props.selected?.value" width="50px">
                       <button @click="() => onSelectItem(option)" class="btn btn-success">
                         <i class="fas fa-check"></i>

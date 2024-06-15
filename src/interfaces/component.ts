@@ -1,4 +1,5 @@
 export interface ISelect2Option {
+  labelFull?: string
   value: string | number
   label: string
 }

@@ -3,13 +3,13 @@ import BoxInfo from '@/components/Common/BoxInfoComponent.vue'
 import { BASE_URL } from '@/config'
 import Request from '@/helpers/requests'
 import { useAppStore } from '@/stores/app'
-import { useAuthStore } from '@/stores/auth'
+import { ROLE_KASIR, useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 
 // setup page
 const authStore = useAuthStore()
-const { token } = storeToRefs(authStore)
+const { token, user } = storeToRefs(authStore)
 const { setPageMeta } = useAppStore()
 setPageMeta({
   title: 'Laporan Penjualan',
@@ -77,7 +77,7 @@ const onPrint = () => {
       </div>
     </div>
   </div>
-  <div class="col-md-12 mb-4" v-if="fetched">
+  <div class="col-md-12 mb-4" v-if="fetched && user?.role !== ROLE_KASIR">
     <BoxInfo v-if="result" :title="result.laba.title" :total="result.laba.total" :icon="'fas ' + result.laba.icon" size="col-lg-12 col-12" />
   </div>
   <div class="col-md-12 mb-4" v-if="fetched">
