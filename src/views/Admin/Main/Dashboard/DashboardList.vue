@@ -6,8 +6,8 @@ import { storeToRefs } from 'pinia'
 
 const { setPageMeta } = useAppStore()
 setPageMeta({
-  title: 'Dashboard',
-  breadcrumbs: ['Home', 'Dashboard']
+  title: 'Informasi Toko',
+  breadcrumbs: ['Home', 'Informasi Toko']
 })
 
 const { getItems } = useDashboardStore()
