@@ -2,11 +2,14 @@
 import InputField from '@/components/Common/InputFieldComponent.vue'
 import Select2 from '@/components/Common/Select2Component.vue'
 import TextAreaField from '@/components/Common/TextAreaFieldComponent.vue'
+import { confirmModal } from '@/helpers/utils'
 import type { ISelect2Option } from '@/interfaces'
 import { useAppStore } from '@/stores/app'
 import { useSupplier } from '@/stores/supplier'
 import { reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { inject } from 'vue'
+const Swal = inject('$swal')
 
 const { setPageMeta } = useAppStore()
 const URL_TARGET = 'master/supplier'
@@ -64,15 +67,19 @@ const initial = async () => {
  * Fungsi ketika submit form
  */
 const submit = () => {
-  if (confirm('Yakin ingin menjalankan aksi ini ?')) {
-    form.status = selectedStatus.value?.value.toString() ?? ''
+  confirmModal({
+    Swal,
+    text: 'Yakin ingin menjalankan aksi ini ?',
+    callback: () => {
+      form.status = selectedStatus.value?.value.toString() ?? ''
 
-    if (paramId) {
-      store.update<IForm>(URL_TARGET, paramId, form, '/admin/master/supplier')
-    } else {
-      store.create<IForm>(URL_TARGET, form, '/admin/master/supplier')
+      if (paramId) {
+        store.update<IForm>(URL_TARGET, paramId, form, '/admin/master/supplier')
+      } else {
+        store.create<IForm>(URL_TARGET, form, '/admin/master/supplier')
+      }
     }
-  }
+  })
 }
 
 // onMount

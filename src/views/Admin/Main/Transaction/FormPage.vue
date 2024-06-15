@@ -1,20 +1,28 @@
 <script lang="ts" setup>
 import InputField from '@/components/Common/InputFieldComponent.vue'
 import Select2 from '@/components/Common/Select2Component.vue'
+import { confirmModal } from '@/helpers/utils'
 import type { IMasterProduct, ISelect2Option } from '@/interfaces'
 import { useAppStore } from '@/stores/app'
 import { usePelanggan } from '@/stores/pelanggan'
 import { useProductStore } from '@/stores/product'
 import moment from 'moment'
 import { storeToRefs } from 'pinia'
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, inject, reactive, ref, watch } from 'vue'
+const Swal = inject('$swal')
 
 const URL_TARGET = 'main/transaction'
-const { setPageMeta } = useAppStore()
+const { setPageMeta, changeSidebarCollapse } = useAppStore()
+const memberElement = ref<any>()
+const itemRefs = ref<HTMLSelectElement[]>([])
+
 setPageMeta({
   title: 'Tambah Transaksi',
   breadcrumbs: ['Home', 'Transaksi', 'Tambah']
 })
+
+// Collapse sidebar in form transaction
+changeSidebarCollapse(true)
 
 // Dropdown Category
 const memberStore = usePelanggan()
@@ -56,7 +64,6 @@ interface IFormDetailRequest {
 }
 
 interface IFormDetail {
-  product_selected: ISelect2Option | null
   product_id: number | null
   product: IMasterProduct | null
   amount: number
@@ -83,9 +90,9 @@ watch(
 
 const purchaseProducts = ref<IFormDetail[]>([])
 
-const onProductSelect = async (selected: any, index: number) => {
-  purchaseProducts.value[index].product_selected = selected
-  purchaseProducts.value[index].product = (await prodocuStore.first('master/product', selected.value)) ?? null
+const onProductSelect = async (index: number) => {
+  let productId = purchaseProducts.value[index].product_id
+  purchaseProducts.value[index].product = (await prodocuStore.first('master/product', productId)) ?? null
 }
 
 const submit = () => {
@@ -98,15 +105,19 @@ const submit = () => {
   form.items = []
   purchaseProducts.value.map((purchaseItem) => {
     form.items.push({
-      product_id: (purchaseItem?.product_selected?.value as number) ?? null,
+      product_id: (purchaseItem.product_id as number) ?? null,
       satuan: purchaseItem.satuan,
       amount: purchaseItem.amount
     })
   })
 
-  if (confirm('Yakin ingin menjalankan aksi ini ?')) {
-    prodocuStore.create<IForm>(URL_TARGET, form, '/admin/main/transaction')
-  }
+  confirmModal({
+    Swal,
+    text: 'Yakin ingin menjalankan aksi ini ?',
+    callback: () => {
+      prodocuStore.create<IForm>(URL_TARGET, form, '/admin/main/transaction')
+    }
+  })
 }
 
 const updateFormField = () => {
@@ -127,7 +138,6 @@ const updateFormField = () => {
 const dynamicFormAdd = () => {
   const lengthItem = purchaseProducts.value.length
   purchaseProducts.value.push({
-    product_selected: null,
     product_id: null,
     product: null,
     amount: 0,
@@ -165,6 +175,10 @@ const dynamicFormAdd = () => {
       wacherDynamicField()
     }
   )
+
+  setTimeout(() => {
+    if (itemRefs.value[lengthItem]) itemRefs.value[lengthItem]!.focus()
+  }, 100)
 }
 
 const dynamicFormRemove = (id: number) => {
@@ -194,12 +208,12 @@ initial()
         <div class="card-body">
           <div class="form">
             <div class="row">
-              <div class="col-md-3 mb-2">
+              <div class="col-md-2 mb-2">
                 <InputField label="Kode Transaksi" placeholder="** Auto Generated **" :disabled="true" />
                 <InputField label="Tanggal" type="date" :value="moment().format('YYYY-MM-DD')" :disabled="true" icon="fas fa-calendar" />
-                <Select2 placeholder="Cari Member ...." :on-select="onMemberSelect" id="member" label="Member" :selected="selectedMember" :options="dropdownItem" :search="searchMember" />
+                <Select2 ref="memberElement" placeholder="Cari Member ...." :on-select="onMemberSelect" id="member" label="Member" :selected="selectedMember" :options="dropdownItem" :search="searchMember" />
               </div>
-              <div class="col-md-9 mb-2">
+              <div class="col-md-10 mb-2">
                 <div class="card">
                   <div class="card-body">
                     <div class="form">
@@ -218,14 +232,20 @@ initial()
                           <tbody>
                             <tr :key="dynamicId" v-for="(detail, dynamicId) in purchaseProducts">
                               <td>
-                                <Select2
+                                <select ref="itemRefs" name="product_selected" id="" v-model="detail.product_id" @change="onProductSelect(dynamicId)" class="form-control">
+                                  <option value="">-- Pilih Produk --</option>
+                                  <option :selected="detail.product_id === item.value" :value="item.value" :key="item.value" v-for="item in dropdownItemProduct">
+                                    {{ item.label }}
+                                  </option>
+                                </select>
+                                <!-- <Select2
                                   :selected="detail.product_selected"
                                   placeholder="Cari Produk ..."
                                   :on-select="(selectitem: any) => onProductSelect(selectitem, dynamicId)"
                                   :id="'product_' + dynamicId"
                                   :options="dropdownItemProduct"
                                   :search="searchProduct"
-                                />
+                                /> -->
                                 <span v-if="detail.product">
                                   {{ (detail.product.per_pack === 0 || detail.product.stock_pack === 0 ? 0 : detail.product.stock_pack / detail.product.per_pack) + ' ' + detail.product.satuan_pack }} / <br />
                                   {{ detail.product.stock_pack + ' ' + detail.product.satuan_ecer }}
@@ -250,6 +270,7 @@ initial()
                                     detail.satuan === 1 ? (detail.product == undefined || detail.product?.per_pack === 0 || detail.product?.stock_pack === 0 ? 0 : detail.product?.stock_pack / detail.product?.per_pack) : detail.product?.stock_pack
                                   "
                                   :min="0"
+                                  v-on:keyup.enter="dynamicFormAdd"
                                 />
                               </td>
                               <td width="150px">

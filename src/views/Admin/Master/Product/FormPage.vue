@@ -10,9 +10,12 @@ import { useProductStore } from '@/stores/product'
 import { storeToRefs } from 'pinia'
 import { computed, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { inject } from 'vue'
+import { confirmModal } from '@/helpers/utils'
+const Swal = inject('$swal')
 
 interface IForm {
-  category_id: number|null
+  category_id: number | null
   code: string
   name: string
   stock_pack: number
@@ -25,7 +28,7 @@ interface IForm {
   harga_beli: number
   description: string
   date: string
-  photo: string|null
+  photo: string | null
 }
 
 const URL_TARGET = 'master/product'
@@ -118,13 +121,17 @@ const submit = () => {
     return
   }
 
-  if (confirm('Yakin ingin menjalankan aksi ini ?')) {
-    if (paramId) {
-      prodocuStore.update<IForm>(URL_TARGET, paramId, form, '/admin/master/product')
-    } else {
-      prodocuStore.create<IForm>(URL_TARGET, form, '/admin/master/product')
+  confirmModal({
+    Swal,
+    text: 'Yakin ingin menjalankan aksi ini ?',
+    callback: () => {
+      if (paramId) {
+        prodocuStore.update<IForm>(URL_TARGET, paramId, form, '/admin/master/product')
+      } else {
+        prodocuStore.create<IForm>(URL_TARGET, form, '/admin/master/product')
+      }
     }
-  }
+  })
 }
 
 /**

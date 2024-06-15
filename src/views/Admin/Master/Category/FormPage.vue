@@ -1,9 +1,12 @@
 <script lang="ts" setup>
 import InputField from '@/components/Common/InputFieldComponent.vue'
+import { confirmModal } from '@/helpers/utils'
 import { useAppStore } from '@/stores/app'
 import { useCategory } from '@/stores/category'
 import { reactive } from 'vue'
 import { useRoute } from 'vue-router'
+import { inject } from 'vue'
+const Swal = inject('$swal')
 
 const { setPageMeta } = useAppStore()
 const URL_TARGET = 'master/category'
@@ -43,13 +46,17 @@ const initial = async () => {
 initial()
 
 const submit = () => {
-  if (confirm('Yakin ingin menjalankan aksi ini ?')) {
-    if (paramId) {
-      masterStore.update<IForm>(URL_TARGET, paramId, form, '/admin/master/category')
-    } else {
-      masterStore.create<IForm>(URL_TARGET, form, '/admin/master/category')
+  confirmModal({
+    Swal,
+    text: 'Yakin ingin menjalankan aksi ini ?',
+    callback: () => {
+      if (paramId) {
+        masterStore.update<IForm>(URL_TARGET, paramId, form, '/admin/master/category')
+      } else {
+        masterStore.create<IForm>(URL_TARGET, form, '/admin/master/category')
+      }
     }
-  }
+  })
 }
 </script>
 <template>

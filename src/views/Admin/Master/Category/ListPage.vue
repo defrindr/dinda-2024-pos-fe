@@ -1,9 +1,12 @@
 <script lang="ts" setup>
 import Pagination from '@/components/Common/PaginationComponent.vue'
+import { confirmModal } from '@/helpers/utils'
 import { useAppStore } from '@/stores/app'
 import { useCategory } from '@/stores/category'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
+import { inject } from 'vue'
+const Swal = inject('$swal')
 
 const search = ref('')
 const URL_TARGET = 'master/category'
@@ -30,9 +33,13 @@ const initialRequest = async (q: string = '', page: number = 1) => {
  * @param id [id] dari data yang ingin dihapus
  */
 const destroy = async (id: any) => {
-  if (confirm('Yakin ingin menghapus data ini ?')) {
-    store.destroy(URL_TARGET, id)
-  }
+  confirmModal({
+    Swal,
+    text: 'Yakin ingin menghapus data ini ?',
+    callback: () => {
+      store.destroy(URL_TARGET, id)
+    }
+  })
 }
 
 /**

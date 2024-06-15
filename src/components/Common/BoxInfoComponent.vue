@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 interface IBoxInfo {
   title: string
-  total?: number | null | string
+  total?: number | null
   icon: string
   size?: string
   color?: string
@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<IBoxInfo>(), {
   <div :class="props.size">
     <div :class="'small-box ' + props.color">
       <div class="inner">
-        <h3>{{ new Intl.NumberFormat().format(props.total ?? 0) }}</h3>
+        <h3>{{ props.total ? new Intl.NumberFormat().format(props.total) : 0 }}</h3>
 
         <p>{{ props.title }}</p>
       </div>

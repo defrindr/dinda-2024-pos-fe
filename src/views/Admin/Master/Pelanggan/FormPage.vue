@@ -7,6 +7,8 @@ import { useAppStore } from '@/stores/app'
 import { usePelanggan } from '@/stores/pelanggan'
 import { reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { inject } from 'vue'
+const Swal = inject('$swal')
 
 const { setPageMeta } = useAppStore()
 const URL_TARGET = 'master/pelanggan'
@@ -80,16 +82,20 @@ const initial = async () => {
  * Fungsi ketika submit form
  */
 const submit = () => {
-  if (confirm('Yakin ingin menjalankan aksi ini ?')) {
-    form.status = selectedStatus.value?.value.toString() ?? ''
-    form.gender = selectedGender.value?.value.toString() ?? ''
+  confirmModal({
+    Swal,
+    text: 'Yakin ingin menjalankan aksi ini ?',
+    callback: () => {
+      form.status = selectedStatus.value?.value.toString() ?? ''
+      form.gender = selectedGender.value?.value.toString() ?? ''
 
-    if (paramId) {
-      store.update<IForm>(URL_TARGET, paramId, form, '/admin/master/pelanggan')
-    } else {
-      store.create<IForm>(URL_TARGET, form, '/admin/master/pelanggan')
+      if (paramId) {
+        store.update<IForm>(URL_TARGET, paramId, form, '/admin/master/pelanggan')
+      } else {
+        store.create<IForm>(URL_TARGET, form, '/admin/master/pelanggan')
+      }
     }
-  }
+  })
 }
 
 // onMount

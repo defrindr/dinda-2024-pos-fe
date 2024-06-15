@@ -9,6 +9,9 @@ import { ROLE_ADMIN, ROLE_KASIR, ROLE_MANAGER } from '@/stores/auth'
 import { useUser } from '@/stores/user'
 import { reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { inject } from 'vue'
+import { confirmModal } from '@/helpers/utils'
+const Swal = inject('$swal')
 
 const URL_TARGET = 'master/user'
 const { setPageMeta } = useAppStore()
@@ -89,13 +92,17 @@ const submit = () => {
     delete form.password
   }
 
-  if (confirm('Yakin ingin menjalankan aksi ini ?')) {
-    if (paramId) {
-      userStore.update<IForm>(URL_TARGET, paramId, form, '/admin/master/user')
-    } else {
-      userStore.create<IForm>(URL_TARGET, form, '/admin/master/user')
+  confirmModal({
+    Swal,
+    text: 'Yakin ingin menjalankan aksi ini ?',
+    callback: () => {
+      if (paramId) {
+        userStore.update<IForm>(URL_TARGET, paramId, form, '/admin/master/user')
+      } else {
+        userStore.create<IForm>(URL_TARGET, form, '/admin/master/user')
+      }
     }
-  }
+  })
 }
 </script>
 <template>

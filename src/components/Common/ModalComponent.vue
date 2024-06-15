@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 interface IModal {
   title?: string
   isOpen: boolean

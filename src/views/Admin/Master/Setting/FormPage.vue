@@ -2,9 +2,12 @@
 import FileField from '@/components/Common/FileFieldComponent.vue'
 import InputField from '@/components/Common/InputFieldComponent.vue'
 import TextAreaField from '@/components/Common/TextAreaFieldComponent.vue'
+import { confirmModal } from '@/helpers/utils'
 import { useAppStore } from '@/stores/app'
 import { useSetting } from '@/stores/setting'
 import { reactive, ref } from 'vue'
+import { inject } from 'vue'
+const Swal = inject('$swal')
 
 const { setPageMeta } = useAppStore()
 const URL_TARGET = 'master/setting'
@@ -41,17 +44,21 @@ const initial = async () => {
  * Fungsi ketika submit form
  */
 const submit = () => {
-  if (confirm('Yakin ingin menjalankan aksi ini ?')) {
-    if (selectedLogo.value) {
-      form.logo = selectedLogo.value
-    } else {
-      form.logo = ''
-    }
+  confirmModal({
+    Swal,
+    text: 'Yakin ingin menjalankan aksi ini ?',
+    callback: () => {
+      if (selectedLogo.value) {
+        form.logo = selectedLogo.value
+      } else {
+        form.logo = ''
+      }
 
-    console.log(form)
-    store.update<IForm>(URL_TARGET, null, form, '/admin/master/setting')
-    initial()
-  }
+      console.log(form)
+      store.update<IForm>(URL_TARGET, null, form, '/admin/master/setting')
+      initial()
+    }
+  })
 }
 
 // onMount

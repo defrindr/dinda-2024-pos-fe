@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import type { ISelect2 } from '@/interfaces'
+import type { ISelect2 } from '@/interfaces';
+import { ref, watch } from 'vue';
 
 const props = withDefaults(defineProps<ISelect2>(), {
   hasSearch: true
@@ -8,8 +8,12 @@ const props = withDefaults(defineProps<ISelect2>(), {
 
 const isModalOpen = ref(false)
 const searchField = ref('')
+const searchElement = ref<HTMLInputElement | null>(null)
 
-const openModal = () => (isModalOpen.value = true)
+const openModal = () => {
+  isModalOpen.value = true
+  // console.log(searchElement.value)
+}
 const closeModal = () => (isModalOpen.value = false)
 const clear = () => {
   props.onSelect(null)
@@ -19,6 +23,16 @@ const onSelectItem = (item: any) => {
   props.onSelect(item)
   closeModal()
 }
+
+watch(isModalOpen, (newVal: boolean) => {
+  if (newVal == true) {
+    setTimeout(() => {
+      if (searchElement.value) {
+        searchElement.value.focus()
+      }
+    }, 100)
+  }
+})
 </script>
 <template>
   <div class="form-group">
@@ -41,7 +55,7 @@ const onSelectItem = (item: any) => {
           </div>
           <div class="modal-body">
             <div v-if="props.hasSearch" class="form-group mb-3 d-flex">
-              <input v-model="searchField" type="text" class="form-control" placeholder="Cari ..." />
+              <input ref="searchElement" v-model="searchField" type="text" class="form-control" placeholder="Cari ..." v-on:keyup.enter="props.search(searchField)" v-on:keyup.esc="closeModal" />
               <button @click="() => props.search(searchField)" class="btn btn-primary ml-2">
                 <i class="fas fa-search"></i>
               </button>

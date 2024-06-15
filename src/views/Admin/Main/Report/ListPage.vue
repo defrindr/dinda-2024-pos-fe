@@ -1,12 +1,15 @@
 <script lang="ts" setup>
-import Modal from '@/components/Common/ModalComponent.vue'
-import { BASE_URL } from '@/config'
-import { useAppStore } from '@/stores/app'
-import { ref } from 'vue'
-import Request from '@/helpers/requests'
 import BoxInfo from '@/components/Common/BoxInfoComponent.vue'
+import { BASE_URL } from '@/config'
+import Request from '@/helpers/requests'
+import { useAppStore } from '@/stores/app'
+import { useAuthStore } from '@/stores/auth'
+import { storeToRefs } from 'pinia'
+import { ref } from 'vue'
 
 // setup page
+const authStore = useAuthStore()
+const { token } = storeToRefs(authStore)
 const { setPageMeta } = useAppStore()
 setPageMeta({
   title: 'Laporan Penjualan',
@@ -39,6 +42,17 @@ const onFetch = async () => {
   fetched.value = true
 }
 
+const onPrint = () => {
+  let json = window.btoa(
+    JSON.stringify({
+      tanggal_awal: tanggalAwal.value,
+      tanggal_akhir: tanggalAkhir.value,
+      token: token.value
+    })
+  )
+  window.open(`${BASE_URL}/main/transaction/export-excel?token=${json}`, '_blank')
+}
+
 // function
 </script>
 
@@ -68,16 +82,28 @@ const onFetch = async () => {
   </div>
   <div class="col-md-12 mb-4" v-if="fetched">
     <div class="card card-info">
+      <div class="card-header">
+        <button class="btn btn-primary" @click="onPrint">
+          <i class="fa fa-print"></i>
+          Export
+        </button>
+      </div>
       <div class="card-body">
         <table class="table table-hover table-striped">
           <thead>
+            <th>Tgl Transaksi</th>
             <th>Nama Produk</th>
-            <th>Jumlah Terjual</th>
+            <th>Qty</th>
+            <th>Harga</th>
+            <th>Total</th>
           </thead>
           <tbody>
-            <tr v-for="transaction in result.transactions">
+            <tr :key="transaction.id" v-for="transaction in result.transactions">
+              <td>{{ transaction.tanggal }}</td>
               <td>{{ transaction.product.name }}</td>
-              <td>{{ transaction.jumlahTerjual }}</td>
+              <td>{{ transaction.quantity }}</td>
+              <td>{{ transaction.price }}</td>
+              <td>{{ transaction.total_price }}</td>
             </tr>
           </tbody>
         </table>

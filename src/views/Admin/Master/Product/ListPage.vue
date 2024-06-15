@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import Pagination from '@/components/Common/PaginationComponent.vue'
+import { confirmModal } from '@/helpers/utils'
 import { useAppStore } from '@/stores/app'
 import { useProductStore } from '@/stores/product'
 import { storeToRefs } from 'pinia'
-import { ref } from 'vue'
+import { inject, ref } from 'vue'
+const Swal = inject('$swal')
 
 // inisiasi konstanta dan store
 const { setPageMeta } = useAppStore()
@@ -12,7 +13,7 @@ const URL_TARGET = 'master/product'
 
 // inisiasi variable
 const search = ref<string>('')
-const { items, metaRequest } = storeToRefs(store)
+const { items } = storeToRefs(store)
 
 // mengatur page meta
 setPageMeta({
@@ -34,9 +35,13 @@ const initialRequest = async (q: string = '', page: number = 1) => {
  * @param id Item yang dipilih
  */
 const destroy = async (id: any) => {
-  if (confirm('Yakin ingin menghapus data ini ?')) {
-    store.destroy(URL_TARGET, id)
-  }
+  confirmModal({
+    Swal,
+    text: 'Yakin ingin menghapus data ini ?',
+    callback: () => {
+      store.destroy(URL_TARGET, id)
+    }
+  })
 }
 
 /**
@@ -109,7 +114,7 @@ initialRequest()
               </thead>
               <tbody>
                 <tr :key="index" v-for="(item, index) in items">
-                  <td>{{ index + 1}}</td>
+                  <td>{{ index + 1 }}</td>
                   <td>{{ item.category.name }}</td>
                   <td>{{ item.code }}</td>
                   <td>{{ item.name }}</td>
