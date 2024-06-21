@@ -8,6 +8,7 @@ import { usePelanggan } from '@/stores/pelanggan'
 import { reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { inject } from 'vue'
+import { confirmModal } from '@/helpers/utils'
 const Swal = inject('$swal')
 
 const { setPageMeta } = useAppStore()
