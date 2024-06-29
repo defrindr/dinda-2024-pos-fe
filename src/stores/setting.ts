@@ -21,7 +21,7 @@ export const useSetting = defineStore('master.setting', () => {
   const update = async <T>(url: string, id: any, body: T, redirect: string) => {
     try {
       // request ke server
-      const handler = await Request.put(`${BASE_URL}/${url}/${id ?? ''}`, body)
+      const handler = await Request.put(`${BASE_URL}/${url}${id ? '/' + id : ''}`, body)
 
       // handle dari request
       if (handler.error) {
