@@ -57,6 +57,7 @@ export const useTransaction = defineStore('main.transaction', () => {
         return
       }
 
+      console.log(handler.response)
       if (handler.response?.status !== 200) {
         setErrorAlert(handler.json.message)
         console.log('response gagal')
@@ -65,8 +66,6 @@ export const useTransaction = defineStore('main.transaction', () => {
 
       setSuccessAlert(handler.json.message)
 
-      // response jika berhasil
-      setSuccessAlert(handler.json.message)
       window.open(`${BASE_URL}/main/transaction/print-struk/${handler.json.data.invoice}`, '_blank', 'noreferrer')
       router.push(redirect)
     } catch (error) {
