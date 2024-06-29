@@ -57,7 +57,7 @@ export const useUser = defineStore('master.user', () => {
         return
       }
 
-      if (handler.response?.status !== 200) {
+      if (handler.response?.status !== 201) {
         setErrorAlert(handler.json.message)
         console.log('response gagal')
         return
