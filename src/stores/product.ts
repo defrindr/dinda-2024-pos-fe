@@ -64,11 +64,6 @@ export const useProductStore = defineStore('master.product', () => {
         console.log('response gagal')
         return
       }
-
-      // response jika berhasil
-      setSuccessAlert(handler.json.message)
-      window.open(`${BASE_URL}/main/transaction/print-struk/${handler.json.data.invoice}`, '_blank', 'noreferrer')
-      router.push(redirect)
     } catch (error) {
       // error tidak diketahui
       setErrorAlert('Terjadi kesalahan saat menjalankan aksi')

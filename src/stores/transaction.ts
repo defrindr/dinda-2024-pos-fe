@@ -64,6 +64,10 @@ export const useTransaction = defineStore('main.transaction', () => {
       }
 
       setSuccessAlert(handler.json.message)
+
+      // response jika berhasil
+      setSuccessAlert(handler.json.message)
+      window.open(`${BASE_URL}/main/transaction/print-struk/${handler.json.data.invoice}`, '_blank', 'noreferrer')
       router.push(redirect)
     } catch (error) {
       setErrorAlert('Terjadi kesalahan saat menjalankan aksi')
