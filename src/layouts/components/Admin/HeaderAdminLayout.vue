@@ -22,7 +22,7 @@ const logout = async () => {
       </li>
     </ul>
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item d-none d-sm-inline-block">
+      <li class="nav-item d-inline-block">
         <a @click="logout" class="nav-link" style="cursor: pointer">
           <i class="fas fa-door-open"></i>
           Logout
