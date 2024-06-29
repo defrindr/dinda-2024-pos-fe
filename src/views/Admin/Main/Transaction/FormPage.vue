@@ -6,6 +6,7 @@ import type { IMasterProduct, ISelect2Option } from '@/interfaces'
 import { useAppStore } from '@/stores/app'
 import { usePelanggan } from '@/stores/pelanggan'
 import { useProductStore } from '@/stores/product'
+import { useTransaction } from '@/stores/transaction'
 import moment from 'moment'
 import { storeToRefs } from 'pinia'
 import { computed, inject, reactive, ref, watch } from 'vue'
@@ -40,6 +41,7 @@ const onMemberSelect = (selected: any) => {
 
 // Dropdown Category
 const prodocuStore = useProductStore()
+const transactionStore = useTransaction()
 const { fetch: fetchProduct } = prodocuStore
 const { items: productItems } = storeToRefs(prodocuStore)
 const dropdownItemProduct = computed(() => productItems.value.map((item) => ({ value: item.id, labelFull: `${item.name}<br /><span style='font-size:10px'>${item.stock_pack} ${item.satuan_ecer} | ${item._harga_ecer}</span>`, label: item.name })))
@@ -122,7 +124,7 @@ const submit = () => {
     Swal,
     text: 'Yakin ingin menjalankan aksi ini ?',
     callback: () => {
-      prodocuStore.create<IForm>(URL_TARGET, form, '/admin/main/transaction')
+      transactionStore.create<IForm>(URL_TARGET, form, '/admin/main/transaction')
     }
   })
 }
