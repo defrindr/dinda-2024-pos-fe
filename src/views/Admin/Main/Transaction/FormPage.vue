@@ -255,7 +255,7 @@ initial()
                                   :search="searchProduct"
                                 />
                                 <span v-if="detail.product">
-                                  {{ (detail.product.per_pack === 0 || detail.product.stock_pack === 0 ? 0 : detail.product.stock_pack / detail.product.per_pack) + ' ' + detail.product.satuan_pack }} / <br />
+                                  {{ Math.floor(detail.product.per_pack === 0 || detail.product.stock_pack === 0 ? 0 : detail.product.stock_pack / detail.product.per_pack) + ' ' + detail.product.satuan_pack }} / <br />
                                   {{ detail.product.stock_pack + ' ' + detail.product.satuan_ecer }}
                                 </span>
                               </td>

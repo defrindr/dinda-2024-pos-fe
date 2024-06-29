@@ -59,7 +59,7 @@ export const useSupplier = defineStore('master.supplier', () => {
         setErrorAlert('Gagal mengirim permintaan')
         console.log('request error', handler.error)
         return
-      } else if (handler.response?.status !== 200) {
+      } else if (handler.response?.status !== 201) {
         setErrorAlert(handler.json.message)
         console.log('response gagal')
         return

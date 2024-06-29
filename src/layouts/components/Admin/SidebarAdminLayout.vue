@@ -32,7 +32,7 @@ const isManager = user.value?.role == ROLE_MANAGER
           <SidebarItem label="Beranda" to="/admin/home" icon="fas fa-home" />
           <li class="nav-header">PENJUALAN</li>
           <SidebarItem label="Transaksi" to="/admin/main/transaction" icon="fas fa-wallet" />
-          <SidebarItem v-if="isAdmin || isManager" label="Laporan" to="/admin/main/report" icon="fas fa-newspaper" />
+          <SidebarItem label="Laporan" to="/admin/main/report" icon="fas fa-newspaper" />
           <li v-if="isAdmin" class="nav-header">MASTER</li>
           <SidebarItem v-if="isAdmin || isManager" label="Informasi Kategori" to="/admin/master/category" icon="fas fa-database" />
           <SidebarItem v-if="isAdmin || isCashier" label="Pelanggan" to="/admin/master/pelanggan" icon="fas fa-users" />

@@ -12,7 +12,7 @@ const search = ref('')
 const URL_TARGET = 'master/supplier'
 const { setPageMeta } = useAppStore()
 setPageMeta({
-  title: 'List Supplier',
+  title: 'Informasi data Supplier',
   breadcrumbs: ['Home', 'Supplier', 'List']
 })
 

@@ -9,7 +9,7 @@ const { appName } = storeToRefs(appStore)
 <template>
   <footer class="main-footer">
     <strong
-      >Copyright &copy; 2023 <a href="https://localhost">{{ appName }}</a
+      >Copyright &copy; 2024 <a href="https://main--poslaravue.netlify.app/auth/login">{{ appName }}</a
       >.</strong
     >
     All rights reserved.
