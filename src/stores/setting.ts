@@ -22,7 +22,7 @@ export const useSetting = defineStore('master.setting', () => {
     try {
       // request ke server
       let fullUrl = `${BASE_URL}/${url}`
-      if (id != '') {
+      if (id) {
         fullUrl += `/${id}`
       }
 
@@ -54,7 +54,7 @@ export const useSetting = defineStore('master.setting', () => {
       // request ke server
 
       let fullUrl = `${BASE_URL}/${url}`
-      if (id != '') {
+      if (id) {
         fullUrl += `/${id}`
       }
       const handler = await Request.get(fullUrl)
