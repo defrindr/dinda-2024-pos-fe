@@ -21,7 +21,12 @@ export const useSetting = defineStore('master.setting', () => {
   const update = async <T>(url: string, id: any, body: T, redirect: string) => {
     try {
       // request ke server
-      const handler = await Request.put(`${BASE_URL}/${url}${id ? '/' + id : ''}`, body)
+      let fullUrl = `${BASE_URL}/${url}`
+      if (id != '') {
+        fullUrl += `/${id}`
+      }
+
+      const handler = await Request.put(fullUrl, body)
 
       // handle dari request
       if (handler.error) {
@@ -47,7 +52,12 @@ export const useSetting = defineStore('master.setting', () => {
   const first = async <T>(url: string, id: any) => {
     try {
       // request ke server
-      const handler = await Request.get(`${BASE_URL}/${url}/${id ?? ''}`)
+
+      let fullUrl = `${BASE_URL}/${url}`
+      if (id != '') {
+        fullUrl += `/${id}`
+      }
+      const handler = await Request.get(fullUrl)
 
       // handle jika request error
       if (handler.error) {
